@@ -1,7 +1,10 @@
+import 'package:doane/controller/login.dart';
 import 'package:doane/page/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -11,12 +14,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Doane',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff6295A2)),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const LoginCont(),
     );
   }
 }
