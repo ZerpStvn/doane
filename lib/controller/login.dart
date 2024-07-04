@@ -33,7 +33,7 @@ class _LoginContState extends State<LoginCont> {
         children: [
           Center(
             child: SizedBox(
-              width: widthsize * 0.30,
+              width: widthsize < 788 ? widthsize * 0.90 : widthsize * 0.30,
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
