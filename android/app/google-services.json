@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "857987860304",
+    "project_id": "doane-c693d",
+    "storage_bucket": "doane-c693d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857987860304:android:3b1c6b088f82861d128e55",
+        "android_client_info": {
+          "package_name": "com.example.doane"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnlOloHLAozCPtsSGeMHZV77bYw7SVJ70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
