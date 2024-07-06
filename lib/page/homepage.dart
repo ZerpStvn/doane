@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     },
                     leading: const Icon(
-                      Icons.note_outlined,
+                      Icons.notification_add,
                       color: Colors.white,
                     ),
                     title: const PrimaryFont(
@@ -108,6 +108,28 @@ class _HomePageState extends State<HomePage> {
                     ),
                     title: const PrimaryFont(
                       title: "Attendance",
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(
+                      Icons.church_outlined,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Pledges",
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(
+                      Icons.church_outlined,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Sermons list",
                       color: Colors.white,
                     ),
                   ),
