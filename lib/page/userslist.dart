@@ -36,7 +36,7 @@ class _UsersListState extends State<UsersList> {
                   onPressed: () {
                     handleadded();
                   },
-                  child: const Text("Add User"))
+                  child: Text(isloadd == false ? "Add User" : "View Users"))
             ],
           ),
         ),

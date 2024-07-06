@@ -1,5 +1,5 @@
 import 'package:doane/controller/ministrylist.dart';
-import 'package:doane/controller/userForm.dart';
+import 'package:doane/page/userslist.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +11,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int currentpage = 0;
+
+  Widget currentpages() {
+    if (currentpage == 0) {
+      return const UsersList();
+    } else if (currentpage == 1) {
+      return const MinistryListCont();
+    } else {
+      return const UsersList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +45,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        currentpage = 0;
+                      });
+                    },
                     leading: const Icon(
                       Icons.person,
                       color: Colors.white,
@@ -44,13 +60,32 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   ListTile(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        currentpage = 1;
+                      });
+                    },
                     leading: const Icon(
                       Icons.note_outlined,
                       color: Colors.white,
                     ),
                     title: const PrimaryFont(
                       title: "Ministry",
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        currentpage = 1;
+                      });
+                    },
+                    leading: const Icon(
+                      Icons.note_outlined,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Announcement",
                       color: Colors.white,
                     ),
                   ),
@@ -80,13 +115,13 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const Expanded(
+          Expanded(
             flex: 8,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [UserForm()],
+                children: [currentpages()],
               ),
             ),
           )
