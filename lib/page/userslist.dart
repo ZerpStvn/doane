@@ -40,7 +40,11 @@ class _UsersListState extends State<UsersList> {
             ],
           ),
         ),
-        isloadd ? const UserForm() : const UsersDatalist()
+        isloadd
+            ? const UserForm(
+                isedit: false,
+              )
+            : const UsersDatalist()
       ],
     );
   }

@@ -2,12 +2,15 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
+import 'package:doane/model/users.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserForm extends StatefulWidget {
-  const UserForm({super.key});
+  final bool? isedit;
+  final String? userid;
+  const UserForm({super.key, this.isedit, this.userid});
 
   @override
   State<UserForm> createState() => _UserFormState();
@@ -38,11 +41,12 @@ class _UserFormState extends State<UserForm> {
   String? _ministry;
   List<String> _ministryList = [];
   bool isloading = false;
-
+  late FetchUser _fetchUser;
   @override
   void initState() {
     super.initState();
     _fetchMinistries();
+    fetchuserdata();
   }
 
   Future<void> _fetchMinistries() async {
@@ -58,6 +62,31 @@ class _UserFormState extends State<UserForm> {
       });
     } catch (e) {
       debugPrint('Error fetching ministries: $e');
+    }
+  }
+
+  Future<void> fetchuserdata() async {
+    if (widget.isedit!) {
+      _fetchUser = FetchUser(
+        nameController: _nameController,
+        emailController: _emailController,
+        addressController: _addressController,
+        ageController: _ageController,
+        birthController: _birthController,
+        phoneController: _phoneController,
+        bioController: _bioController,
+        emergencyContactNameController: _emergencyContactNameController,
+        emergencyContactPhoneController: _emergencyContactPhoneController,
+        additionalNotesController: _additionalNotesController,
+        denominationController: _denominationController,
+        congregationController: _congregationController,
+        usernameController: _usernameController,
+        passwordController: _passwordController,
+        userId: widget.userid!,
+      );
+      _fetchUser.fetchUserData();
+    } else {
+      debugPrint("Not inview");
     }
   }
 
@@ -108,6 +137,47 @@ class _UserFormState extends State<UserForm> {
         _showSnackbar('Form submitted successfully!');
       } catch (e) {
         _showSnackbar('Error submitting form: $e');
+      }
+    }
+  }
+
+  Future<void> _submitFormEdit(String uid) async {
+    setState(() {
+      isloading = true;
+    });
+    if (_formKey.currentState!.validate()) {
+      try {
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'address': _addressController.text,
+          'age': _ageController.text,
+          'dateOfBirth': _birthController.text,
+          'phone': _phoneController.text,
+          'gender': _gender,
+          'maritalStatus': _maritalStatus,
+          'membershipStatus': _membershipStatus,
+          'role': _role,
+          'ministry': _ministry,
+          'isBaptised': _isBaptised,
+          'emergencyContactName': _emergencyContactNameController.text,
+          'emergencyContactPhone': _emergencyContactPhoneController.text,
+          'bio': _bioController.text,
+          'additionalNotes': _additionalNotesController.text,
+          'denomination': _denominationController.text,
+          'congregation': _congregationController.text,
+          'username': _usernameController.text,
+          'password': _passwordController.text,
+        });
+        _showSnackbar('Form Updated successfully!');
+        setState(() {
+          isloading = false;
+        });
+      } catch (e) {
+        _showSnackbar('Error submitting form: $e');
+        setState(() {
+          isloading = false;
+        });
       }
     }
   }
@@ -172,6 +242,7 @@ class _UserFormState extends State<UserForm> {
                     Expanded(
                       child: TextFormField(
                         controller: _emailController,
+                        readOnly: widget.isedit == false ? false : true,
                         decoration: const InputDecoration(labelText: 'Email'),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -431,18 +502,31 @@ class _UserFormState extends State<UserForm> {
                   },
                 ),
                 const SizedBox(height: 20),
-                isloading
-                    ? const Center(child: CircularProgressIndicator())
-                    : SizedBox(
-                        height: 40,
-                        child: ButtonCallback(
-                            function: () {
-                              handleCreateAccount();
-                            },
-                            bgcolor: maincolor,
-                            fcolor: Colors.white,
-                            title: "SUBMIT INFORMATION"),
-                      )
+                widget.isedit == false
+                    ? isloading
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: 40,
+                            child: ButtonCallback(
+                                function: () {
+                                  handleCreateAccount();
+                                },
+                                bgcolor: maincolor,
+                                fcolor: Colors.white,
+                                title: "SUBMIT INFORMATION"),
+                          )
+                    : isloading
+                        ? const Center(child: CircularProgressIndicator())
+                        : SizedBox(
+                            height: 40,
+                            child: ButtonCallback(
+                                function: () {
+                                  _submitFormEdit(widget.userid!);
+                                },
+                                bgcolor: maincolor,
+                                fcolor: Colors.white,
+                                title: "UPDATE INFORMATION"),
+                          )
               ],
             ),
           ),

@@ -13,11 +13,41 @@ class MinistryListCont extends StatefulWidget {
 class _MinistryListContState extends State<MinistryListCont> {
   final TextEditingController _ministryname = TextEditingController();
   bool isloading = false;
+  List<Map<String, dynamic>> ministry = [];
 
   @override
   void dispose() {
     _ministryname.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handlegetministry();
+  }
+
+  Future handlegetministry() async {
+    try {
+      QuerySnapshot ministryget =
+          await FirebaseFirestore.instance.collection('ministry').get();
+
+      if (ministryget.docs.isNotEmpty) {
+        List<Map<String, dynamic>> fetchedMinistries = [];
+        for (var doc in ministryget.docs) {
+          fetchedMinistries.add({
+            ...doc.data() as Map<String, dynamic>,
+            'id': doc.id, // Store the document ID for deletion
+          });
+        }
+
+        setState(() {
+          ministry = fetchedMinistries;
+        });
+      }
+    } catch (error) {
+      debugPrint("Error $error");
+    }
   }
 
   Future handleadd() async {
@@ -32,12 +62,24 @@ class _MinistryListContState extends State<MinistryListCont> {
         isloading = false;
       });
       _showSnackbar("Added Ministry ");
+      handlegetministry();
     } catch (error) {
       debugPrint("Error $error");
       setState(() {
         isloading = false;
       });
       _showSnackbar("Error Adding Ministry ");
+    }
+  }
+
+  Future handledelete(String id) async {
+    try {
+      await FirebaseFirestore.instance.collection('ministry').doc(id).delete();
+      _showSnackbar("Deleted Ministry");
+      handlegetministry(); // Refresh the list after deletion
+    } catch (error) {
+      debugPrint("Error $error");
+      _showSnackbar("Error Deleting Ministry");
     }
   }
 
@@ -61,7 +103,7 @@ class _MinistryListContState extends State<MinistryListCont> {
               controller: _ministryname,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter  name';
+                  return 'Please enter name';
                 }
                 return null;
               },
@@ -74,7 +116,7 @@ class _MinistryListContState extends State<MinistryListCont> {
           ),
           isloading == false
               ? SizedBox(
-                  height: 30,
+                  height: 40,
                   child: ButtonCallback(
                       fcolor: Colors.white,
                       bgcolor: maincolor,
@@ -83,7 +125,70 @@ class _MinistryListContState extends State<MinistryListCont> {
                       },
                       title: "ADD MINISTRY"),
                 )
-              : const CircularProgressIndicator()
+              : const CircularProgressIndicator(),
+          const SizedBox(
+            height: 30,
+          ),
+          SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: DataTable(
+                showCheckboxColumn: true,
+                headingRowColor: const MaterialStatePropertyAll(maincolor),
+                headingRowHeight: 30,
+                border: TableBorder.all(width: 0.10, color: Colors.black),
+                headingTextStyle: const TextStyle(color: Colors.white),
+                columns: const [
+                  DataColumn(
+                      label: PrimaryFont(
+                    title: "Index",
+                    color: Colors.white,
+                  )),
+                  DataColumn(
+                      label: PrimaryFont(
+                    title: "Icon",
+                    color: Colors.white,
+                  )),
+                  DataColumn(
+                      label: PrimaryFont(
+                    title: "Name",
+                    color: Colors.white,
+                  )),
+                  DataColumn(
+                      label: PrimaryFont(
+                    title: "Actions",
+                    color: Colors.white,
+                  )),
+                ],
+                rows: List<DataRow>.generate(
+                  ministry.length,
+                  (index) => DataRow(
+                    cells: [
+                      DataCell(Text('${index + 1}')),
+                      DataCell(Container(
+                        height: 40,
+                        width: 40,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage("assets/church.png"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )),
+                      DataCell(Text(ministry[index]['name'] ?? '')),
+                      DataCell(Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              handledelete(ministry[index]['id']);
+                            },
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
+                ),
+              )),
         ],
       ),
     );
