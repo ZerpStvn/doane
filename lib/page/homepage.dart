@@ -1,3 +1,5 @@
+import 'package:doane/controller/ministrylist.dart';
+import 'package:doane/controller/userForm.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 
@@ -40,14 +42,53 @@ class _HomePageState extends State<HomePage> {
                       title: "Users",
                       color: Colors.white,
                     ),
-                  )
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(
+                      Icons.note_outlined,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Ministry",
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(
+                      Icons.event,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Events",
+                      color: Colors.white,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {},
+                    leading: const Icon(
+                      Icons.leaderboard,
+                      color: Colors.white,
+                    ),
+                    title: const PrimaryFont(
+                      title: "Attendance",
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
           const Expanded(
             flex: 8,
-            child: Column(),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [UserForm()],
+              ),
+            ),
           )
         ],
       ),
