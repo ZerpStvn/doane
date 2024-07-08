@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/login.dart';
 import 'package:doane/controller/ministrylist.dart';
 import 'package:doane/page/announcement.dart';
+import 'package:doane/page/attendance.dart';
 import 'package:doane/page/event.dart';
 import 'package:doane/page/pledge.dart';
+import 'package:doane/page/user/attendevent.dart';
+import 'package:doane/page/user/pledge.dart';
+import 'package:doane/page/user/profile.dart';
 import 'package:doane/page/userslist.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +35,27 @@ class _HomePageState extends State<HomePage> {
       return const AnnouncementPage();
     } else if (currentpage == 3) {
       return const EventsPage();
+    } else if (currentpage == 4) {
+      return const Attendance();
+    } else if (currentpage == 5) {
+      return const PledgesPage();
+    } else {
+      return const UsersList();
+    }
+  }
+
+  //userside
+  Widget currentpagesuser() {
+    if (currentpage == 0) {
+      return userrole == "admin" || userrole == null
+          ? const UsersList()
+          : const AttendEventPage();
+    } else if (currentpage == 1) {
+      return const MinistryListCont();
+    } else if (currentpage == 2) {
+      return const UserPledges();
+    } else if (currentpage == 3) {
+      return UserProfile(isedit: true, userid: currentuser!.uid);
     } else if (currentpage == 5) {
       return const PledgesPage();
     } else {
@@ -41,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     try {
       DocumentSnapshot userobjects = await FirebaseFirestore.instance
           .collection('users')
-          .doc(currentuser!.uid)
+          .doc('iZvUt78JeCTb7xjF8p7DF84EXvN2')
           .get();
 
       if (userobjects.exists) {
@@ -82,6 +108,19 @@ class _HomePageState extends State<HomePage> {
     getuserData();
   }
 
+  Future<void> handlelogout() async {
+    try {
+      await FirebaseAuth.instance.signOut().then((value) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginCont()),
+            (route) => false);
+      });
+    } catch (err) {
+      debugPrint("$err");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +129,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           userrole == 'admin' || userrole == "staff"
               ? Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Drawer(
                     backgroundColor: const Color.fromARGB(255, 71, 139, 171),
                     shape: const RoundedRectangleBorder(),
@@ -102,8 +141,11 @@ class _HomePageState extends State<HomePage> {
                             title: "DOANE MIS",
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            size: 26,
+                            size: 34,
                           ),
+                        ),
+                        const SizedBox(
+                          height: 30,
                         ),
                         ListTile(
                           onTap: () {
@@ -120,6 +162,9 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 17,
+                        ),
                         ListTile(
                           onTap: () {
                             setState(() {
@@ -134,6 +179,9 @@ class _HomePageState extends State<HomePage> {
                             title: "Ministry",
                             color: Colors.white,
                           ),
+                        ),
+                        const SizedBox(
+                          height: 17,
                         ),
                         ListTile(
                           onTap: () {
@@ -150,6 +198,9 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 17,
+                        ),
                         ListTile(
                           onTap: () {
                             setState(() {
@@ -165,8 +216,15 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 17,
+                        ),
                         ListTile(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              currentpage = 4;
+                            });
+                          },
                           leading: const Icon(
                             Icons.leaderboard,
                             color: Colors.white,
@@ -175,6 +233,9 @@ class _HomePageState extends State<HomePage> {
                             title: "Attendance",
                             color: Colors.white,
                           ),
+                        ),
+                        const SizedBox(
+                          height: 17,
                         ),
                         ListTile(
                           onTap: () {
@@ -191,14 +252,30 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        // ListTile(
+                        //   onTap: () {},
+                        //   leading: const Icon(
+                        //     Icons.church_outlined,
+                        //     color: Colors.white,
+                        //   ),
+                        //   title: const PrimaryFont(
+                        //     title: "Sermons list",
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
+                        const SizedBox(
+                          height: 140,
+                        ),
                         ListTile(
-                          onTap: () {},
+                          onTap: () {
+                            handlelogout();
+                          },
                           leading: const Icon(
-                            Icons.church_outlined,
+                            Icons.logout_rounded,
                             color: Colors.white,
                           ),
                           title: const PrimaryFont(
-                            title: "Sermons list",
+                            title: "Logout",
                             color: Colors.white,
                           ),
                         ),
@@ -207,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 )
               : Expanded(
-                  flex: 2,
+                  flex: 1,
                   child: Drawer(
                     backgroundColor: const Color.fromARGB(255, 71, 139, 171),
                     shape: const RoundedRectangleBorder(),
@@ -221,6 +298,27 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                             size: 26,
                           ),
+                        ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 0;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.event,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Attend Events",
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13,
                         ),
                         ListTile(
                           onTap: () {
@@ -237,10 +335,13 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 13,
+                        ),
                         ListTile(
                           onTap: () {
                             setState(() {
-                              currentpage = 5;
+                              currentpage = 2;
                             });
                           },
                           leading: const Icon(
@@ -252,17 +353,58 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 3;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Profile",
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            handlelogout();
+                          },
+                          leading: const Icon(
+                            Icons.logout_rounded,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Logout",
+                            color: Colors.white,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
           Expanded(
-            flex: 8,
+            flex: 6,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: [currentpages()],
+                children: [
+                  userrole == 'admin' || userrole == "staff"
+                      ? currentpages()
+                      : currentpagesuser()
+                ],
               ),
             ),
           )

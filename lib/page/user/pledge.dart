@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:doane/utils/const.dart';
 
-class PledgesPage extends StatefulWidget {
-  const PledgesPage({super.key});
+class UserPledges extends StatefulWidget {
+  const UserPledges({super.key});
 
   @override
-  State<PledgesPage> createState() => _PledgesPageState();
+  State<UserPledges> createState() => _UserPledgesState();
 }
 
-class _PledgesPageState extends State<PledgesPage> {
+class _UserPledgesState extends State<UserPledges> {
   final _amountController = TextEditingController();
   final _numberTimesController = TextEditingController();
   final _frequencyController = TextEditingController();
@@ -336,7 +336,7 @@ class _PledgesPageState extends State<PledgesPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.90,
                   child: DataTable(
-                    //border: TableBorder.all(width: 1, color: Colors.black),
+                    border: TableBorder.all(width: 1, color: Colors.black),
                     headingRowColor: MaterialStateProperty.all(maincolor),
                     columns: const [
                       DataColumn(
@@ -391,7 +391,7 @@ class _PledgesPageState extends State<PledgesPage> {
                         DataCell(Text(pledge['totalAmount'])),
                         DataCell(
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               _deletePledge(pledge.id);
                             },

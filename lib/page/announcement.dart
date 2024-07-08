@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -345,8 +346,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width * 0.90,
                   child: DataTable(
-                    border: TableBorder.all(width: 1, color: Colors.black),
-                    headingRowColor: MaterialStateProperty.all(Colors.blue),
+                    //border: TableBorder.all(width: 1, color: Colors.black),
+                    headingRowColor: MaterialStateProperty.all(maincolor),
                     columns: const [
                       DataColumn(
                           label: Text('Title',
