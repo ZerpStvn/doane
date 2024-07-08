@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     try {
       DocumentSnapshot userobjects = await FirebaseFirestore.instance
           .collection('users')
-          .doc('iZvUt78JeCTb7xjF8p7DF84EXvN2')
+          .doc(currentuser!.uid)
           .get();
 
       if (userobjects.exists) {
