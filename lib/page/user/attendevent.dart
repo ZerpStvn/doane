@@ -130,7 +130,7 @@ class _AttendEventPageState extends State<AttendEventPage> {
                       Center(
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
-                          height: 55,
+                          height: 40,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: maincolor,

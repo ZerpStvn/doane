@@ -373,10 +373,12 @@ class _EventsPageState extends State<EventsPage> {
                     rows: announcements.map((announcement) {
                       debugPrint("${announcement['image']}");
                       return DataRow(cells: [
-                        DataCell(Text(announcement['title'])),
-                        DataCell(Text(announcement['venue'])),
-                        DataCell(Text(announcement['date'])),
-                        DataCell(Text(announcement['time'])),
+                        DataCell(
+                            PrimaryFont(title: "${announcement['title']}")),
+                        DataCell(
+                            PrimaryFont(title: "${announcement['venue']}")),
+                        DataCell(PrimaryFont(title: "${announcement['date']}")),
+                        DataCell(PrimaryFont(title: "${announcement['time']}")),
                         // announcement['image'] == null
                         //     ? const DataCell(Text("No Image"))
                         //     : DataCell(Container(
