@@ -83,7 +83,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           'venue': _venueController.text,
           'date': _dateController.text,
           'time': _timeController.text,
-          'image': imageUrl,
+          'image': imageUrl ?? "",
           'others': _othersController.text,
         });
         _showSnackbar('Announcement submitted successfully!');
@@ -274,34 +274,35 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                     readOnly: true,
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: _imageName ?? '',
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Image',
-                            border: OutlineInputBorder(),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          readOnly: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select an image';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.image),
-                        onPressed: _pickImage,
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: TextFormField(
+                  //         controller: TextEditingController(
+                  //           text: _imageName ?? '',
+                  //         ),
+                  //         decoration: const InputDecoration(
+                  //           labelText: 'Image',
+                  //           border: OutlineInputBorder(),
+                  //           filled: true,
+                  //           fillColor: Colors.white,
+                  //         ),
+                  //         readOnly: true,
+                  //         validator: (value) {
+                  //           if (value == null || value.isEmpty) {
+                  //             return 'Please select an image';
+                  //           }
+                  //           return null;
+                  //         },
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       icon: const Icon(Icons.image),
+                  //       onPressed: _pickImage,
+                  //     ),
+                  //   ],
+                  // ),
+
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _othersController,

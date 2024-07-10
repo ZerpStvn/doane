@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/front/event.dart';
 import 'package:doane/utils/const.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -106,36 +104,36 @@ class _MainpageState extends State<Mainpage> {
                         ),
                         Row(
                           children: [
-                            TextButton(
-                              onPressed: () {},
-                              child: const PrimaryFont(
-                                title: "Events",
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: const PrimaryFont(
-                                title: "Anouncements",
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: const PrimaryFont(
-                                title: "Contact",
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: const PrimaryFont(
+                            //     title: "Events",
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // const SizedBox(
+                            //   width: 15,
+                            // ),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: const PrimaryFont(
+                            //     title: "Anouncements",
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // const SizedBox(
+                            //   width: 15,
+                            // ),
+                            // TextButton(
+                            //   onPressed: () {},
+                            //   child: const PrimaryFont(
+                            //     title: "Contact",
+                            //     color: Colors.white,
+                            //   ),
+                            // ),
+                            // const SizedBox(
+                            //   width: 15,
+                            // ),
                             SizedBox(
                               height: 48,
                               width: 100,
@@ -167,10 +165,11 @@ class _MainpageState extends State<Mainpage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                    height: 630,
-                    width: 530,
-                    child:
-                        Image.network(fit: BoxFit.cover, "assets/image.png")),
+                    height: 650,
+                    width: 630,
+                    child: Image.network(
+                        fit: BoxFit.cover,
+                        "https://images.unsplash.com/photo-1587293094245-15c3520d3894?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")),
                 const SizedBox(
                   width: 50,
                 ),
@@ -282,77 +281,80 @@ class _MainpageState extends State<Mainpage> {
             const SizedBox(
               height: 19,
             ),
-            FutureBuilder(
-                future: FirebaseFirestore.instance
-                    .collection('announcements')
-                    .get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Container();
-                  } else if (!snapshot.hasData) {
-                    return Container();
-                  } else {
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(10),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              mainAxisExtent: 360),
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        var datafile = snapshot.data!.docs[index].data();
-                        return Stack(
-                          children: [
-                            Container(
-                              height: 340,
-                              width: 340,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  image: const DecorationImage(
-                                      colorFilter: ColorFilter.mode(
-                                          Color.fromARGB(139, 0, 0, 0),
-                                          BlendMode.multiply),
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
-                            ),
-                            Positioned(
-                                bottom: 45,
-                                left: 20,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    PrimaryFont(
-                                      title: "${datafile['title']}",
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      size: 25,
-                                    ),
-                                    PrimaryFont(
-                                      title:
-                                          "${datafile['date']} ${datafile['time']}",
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                      size: 17,
-                                    ),
-                                    PrimaryFont(
-                                      title: "${datafile['venue']}",
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                      size: 17,
-                                    ),
-                                  ],
-                                ))
-                          ],
-                        );
-                      },
-                    );
-                  }
-                }),
+            Center(
+              child: FutureBuilder(
+                  future: FirebaseFirestore.instance
+                      .collection('announcements')
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container();
+                    } else if (!snapshot.hasData) {
+                      return Container();
+                    } else {
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(10),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                mainAxisExtent: 360),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          var datafile = snapshot.data!.docs[index].data();
+                          return Stack(
+                            children: [
+                              Container(
+                                height: 340,
+                                width: 340,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: const DecorationImage(
+                                        colorFilter: ColorFilter.mode(
+                                            Color.fromARGB(139, 0, 0, 0),
+                                            BlendMode.multiply),
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                            "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
+                              ),
+                              Positioned(
+                                  bottom: 45,
+                                  left: 20,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      PrimaryFont(
+                                        title: "${datafile['title']}",
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        size: 25,
+                                      ),
+                                      PrimaryFont(
+                                        title:
+                                            "${datafile['date']} ${datafile['time']}",
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                        size: 17,
+                                      ),
+                                      PrimaryFont(
+                                        title: "${datafile['venue']}",
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                        size: 17,
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  }),
+            ),
             const EventsFrontpage()
           ],
         ),
