@@ -39,6 +39,8 @@ class _PledgesPageState extends State<PledgesPage> {
       setState(() {
         _membersList =
             querySnapshot.docs.map((doc) => doc['name'] as String).toList();
+        // Ensure uniqueness of members' names
+        _membersList = _membersList.toSet().toList();
         if (_membersList.isNotEmpty) {
           _selectedName = _membersList[0];
         }
