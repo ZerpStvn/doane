@@ -391,7 +391,7 @@ class _PledgesPageState extends State<PledgesPage> {
                         DataCell(Text(pledge['totalAmount'])),
                         DataCell(
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
                               _deletePledge(pledge.id);
                             },

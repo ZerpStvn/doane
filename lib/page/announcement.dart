@@ -3,7 +3,6 @@ import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_web/image_picker_web.dart';
 import 'package:intl/intl.dart';
 import 'dart:typed_data';
 
@@ -55,16 +54,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final imageInfo = await ImagePickerWeb.getImageInfo();
+  // Future<void> _pickImage() async {
+  //   final imageInfo = await ImagePickerWeb.getImageInfo();
 
-    if (imageInfo != null && imageInfo.data != null) {
-      setState(() {
-        _imageData = imageInfo.data;
-        _imageName = imageInfo.fileName;
-      });
-    }
-  }
+  //   if (imageInfo != null && imageInfo.data != null) {
+  //     setState(() {
+  //       _imageData = imageInfo.data;
+  //       _imageName = imageInfo.fileName;
+  //     });
+  //   }
+  // }
 
   Future<void> _submitAnnouncement() async {
     if (_formKey.currentState!.validate()) {
