@@ -415,13 +415,31 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
 
   Future<void> _deleteAnnouncement(String announcementId) async {
     try {
-      await FirebaseFirestore.instance
+      DocumentSnapshot announcementDoc = await FirebaseFirestore.instance
           .collection('announcements')
           .doc(announcementId)
-          .delete();
-      _showSnackbar('Announcement deleted successfully!');
+          .get();
+
+      if (announcementDoc.exists) {
+        Map<String, dynamic> announcementData =
+            announcementDoc.data() as Map<String, dynamic>;
+
+        announcementData['type'] = 'announcement';
+        await FirebaseFirestore.instance
+            .collection('archive')
+            .add(announcementData);
+
+        await FirebaseFirestore.instance
+            .collection('announcements')
+            .doc(announcementId)
+            .delete();
+
+        _showSnackbar('Announcement deleted and archived successfully!');
+      } else {
+        _showSnackbar('Announcement not found!');
+      }
     } catch (e) {
-      _showSnackbar('Error deleting announcement: $e');
+      _showSnackbar('Error deleting and archiving announcement: $e');
     }
   }
 }

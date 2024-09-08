@@ -74,9 +74,29 @@ class _MinistryListContState extends State<MinistryListCont> {
 
   Future handledelete(String id) async {
     try {
-      await FirebaseFirestore.instance.collection('ministry').doc(id).delete();
-      _showSnackbar("Deleted Ministry");
-      handlegetministry(); // Refresh the list after deletion
+      DocumentSnapshot ministryDoc =
+          await FirebaseFirestore.instance.collection('ministry').doc(id).get();
+
+      if (ministryDoc.exists) {
+        Map<String, dynamic> ministryData =
+            ministryDoc.data() as Map<String, dynamic>;
+
+        ministryData['type'] = 'ministry';
+
+        await FirebaseFirestore.instance
+            .collection('archive')
+            .add(ministryData);
+
+        await FirebaseFirestore.instance
+            .collection('ministry')
+            .doc(id)
+            .delete();
+
+        _showSnackbar("Deleted and Archived Ministry");
+        handlegetministry();
+      } else {
+        _showSnackbar("Ministry not found");
+      }
     } catch (error) {
       debugPrint("Error $error");
       _showSnackbar("Error Deleting Ministry");

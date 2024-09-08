@@ -414,13 +414,27 @@ class _EventsPageState extends State<EventsPage> {
 
   Future<void> _deleteAnnouncement(String announcementId) async {
     try {
-      await FirebaseFirestore.instance
+      DocumentSnapshot eventDoc = await FirebaseFirestore.instance
           .collection('events')
           .doc(announcementId)
-          .delete();
-      _showSnackbar('events deleted successfully!');
+          .get();
+
+      if (eventDoc.exists) {
+        Map<String, dynamic> eventData =
+            eventDoc.data() as Map<String, dynamic>;
+        eventData['type'] = 'event';
+        await FirebaseFirestore.instance.collection('archive').add(eventData);
+        await FirebaseFirestore.instance
+            .collection('events')
+            .doc(announcementId)
+            .delete();
+
+        _showSnackbar('Event deleted and archived successfully!');
+      } else {
+        _showSnackbar('Event not found!');
+      }
     } catch (e) {
-      _showSnackbar('Error deleting events: $e');
+      _showSnackbar('Error deleting and archiving event: $e');
     }
   }
 }

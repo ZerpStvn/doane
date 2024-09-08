@@ -2,9 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/controller/ministrylist.dart';
 import 'package:doane/page/announcement.dart';
+import 'package:doane/page/archive_event.dart';
 import 'package:doane/page/attendance.dart';
 import 'package:doane/page/event.dart';
+import 'package:doane/page/finance.dart';
 import 'package:doane/page/pledge.dart';
+import 'package:doane/page/uploadDocuments.dart';
 import 'package:doane/page/user/attendevent.dart';
 import 'package:doane/page/user/pledge.dart';
 import 'package:doane/page/user/profile.dart';
@@ -39,6 +42,12 @@ class _HomePageState extends State<HomePage> {
       return const Attendance();
     } else if (currentpage == 5) {
       return const PledgesPage();
+    } else if (currentpage == 6) {
+      return const ArchivePage();
+    } else if (currentpage == 7) {
+      return const FileUploadPage();
+    } else if (currentpage == 8) {
+      return const FinancePage();
     } else {
       return const UsersList();
     }
@@ -252,6 +261,61 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                           ),
                         ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 6;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.archive_outlined,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Archive",
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 7;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.edit_document,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Document",
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 8;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.credit_card,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "Finance",
+                            color: Colors.white,
+                          ),
+                        ),
+
                         // ListTile(
                         //   onTap: () {},
                         //   leading: const Icon(

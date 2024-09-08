@@ -411,13 +411,29 @@ class _UserPledgesState extends State<UserPledges> {
 
   Future<void> _deletePledge(String pledgeId) async {
     try {
-      await FirebaseFirestore.instance
+      DocumentSnapshot pledgeDoc = await FirebaseFirestore.instance
           .collection('pledges')
           .doc(pledgeId)
-          .delete();
-      _showSnackbar('Pledge deleted successfully!');
+          .get();
+
+      if (pledgeDoc.exists) {
+        Map<String, dynamic> pledgeData =
+            pledgeDoc.data() as Map<String, dynamic>;
+
+        pledgeData['type'] = 'pledge';
+
+        await FirebaseFirestore.instance.collection('archive').add(pledgeData);
+        await FirebaseFirestore.instance
+            .collection('pledges')
+            .doc(pledgeId)
+            .delete();
+
+        _showSnackbar('Pledge deleted and archived successfully!');
+      } else {
+        _showSnackbar('Pledge not found!');
+      }
     } catch (e) {
-      _showSnackbar('Error deleting pledge: $e');
+      _showSnackbar('Error deleting and archiving pledge: $e');
     }
   }
 }
