@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/globalbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:doane/utils/const.dart';
@@ -309,10 +310,15 @@ class _PledgesPageState extends State<PledgesPage> {
                   const SizedBox(height: 16),
                   isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                          onPressed: _submitPledge,
-                          child: const Text('Submit Pledge'),
-                        ),
+                      : GlobalButton(
+                          oncallback: () {
+                            _submitPledge();
+                          },
+                          title: "Submit Pledge")
+                  // ElevatedButton(
+                  //     onPressed: _submitPledge,
+                  //     child: const Text('Submit Pledge'),
+                  //   ),
                 ],
               ),
             ),

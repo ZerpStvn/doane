@@ -1,6 +1,10 @@
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:doane/utils/const.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class FinancePage extends StatefulWidget {
   const FinancePage({super.key});
@@ -20,7 +24,6 @@ class _FinancePageState extends State<FinancePage> {
     _calculateTotals(); // Calculate the totals on page load
   }
 
-  // Function to calculate the total pledges for each user and the overall total
   Future<void> _calculateTotals() async {
     setState(() {
       isLoading = true;
@@ -37,14 +40,12 @@ class _FinancePageState extends State<FinancePage> {
         String userName = pledgeData['name'];
         double pledgeAmount = double.tryParse(pledgeData['totalAmount']) ?? 0.0;
 
-        // Add pledge amount to the user's total
         if (totals.containsKey(userName)) {
           totals[userName] = totals[userName]! + pledgeAmount;
         } else {
           totals[userName] = pledgeAmount;
         }
 
-        // Add to overall total
         overall += pledgeAmount;
       }
 
@@ -61,14 +62,12 @@ class _FinancePageState extends State<FinancePage> {
     }
   }
 
-  // Function to show a snackbar
   void _showSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
 
-  // Function to delete pledge
   Future<void> _deletePledge(String pledgeId) async {
     try {
       DocumentSnapshot pledgeDoc = await FirebaseFirestore.instance
@@ -97,6 +96,73 @@ class _FinancePageState extends State<FinancePage> {
     }
   }
 
+  // Function to generate PDF report
+  // Function to generate PDF report
+  Future<void> _generatePDFReport() async {
+    final pdf = pw.Document();
+
+    // Fetch the pledge data from Firestore
+    QuerySnapshot pledgesSnapshot =
+        await FirebaseFirestore.instance.collection('pledges').get();
+
+    // Create PDF content
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Finance Overview',
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 16),
+              pw.Text(
+                  'Overall Total Pledged: Php ${overallTotal.toStringAsFixed(2)}',
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 24),
+              pw.Text('Pledge Details',
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 16),
+
+              // Table of all pledge details
+              pw.Table.fromTextArray(
+                context: context,
+                headers: [
+                  'Name',
+                  'Amount',
+                  'Start Date',
+                  'End Date',
+                  'Frequency',
+                  'Number of Times',
+                  'Total Amount',
+                ],
+                data: pledgesSnapshot.docs.map((doc) {
+                  var pledgeData = doc.data() as Map<String, dynamic>;
+                  return [
+                    pledgeData['name'] ?? 'N/A',
+                    pledgeData['amount'] ?? 'N/A',
+                    pledgeData['startDate'] ?? 'N/A',
+                    pledgeData['endDate'] ?? 'N/A',
+                    pledgeData['frequency'] ?? 'N/A',
+                    pledgeData['numberTimes'] ?? 'N/A',
+                    pledgeData['totalAmount'] ?? 'N/A',
+                  ];
+                }).toList(),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Trigger the download in the browser
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -109,8 +175,6 @@ class _FinancePageState extends State<FinancePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-
-          // Display overall total
           Row(
             children: [
               const Text(
@@ -125,10 +189,7 @@ class _FinancePageState extends State<FinancePage> {
             ],
           ),
           const SizedBox(height: 24),
-
           const SizedBox(height: 32),
-
-          // Detailed table of all pledges
           const Text(
             'Pledge Details',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -216,6 +277,14 @@ class _FinancePageState extends State<FinancePage> {
                 ),
               );
             },
+          ),
+          const SizedBox(height: 24),
+
+          // Button to generate PDF report
+          ElevatedButton.icon(
+            onPressed: _generatePDFReport,
+            icon: const Icon(Icons.picture_as_pdf),
+            label: const Text('Download Report as PDF'),
           ),
         ],
       ),

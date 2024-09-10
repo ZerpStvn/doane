@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/globalbutton.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -315,10 +316,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                   const SizedBox(height: 16),
                   isLoading
                       ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(
-                          onPressed: _submitAnnouncement,
-                          child: const Text('Submit Announcement'),
-                        ),
+                      : GlobalButton(
+                          oncallback: () {
+                            _submitAnnouncement();
+                          },
+                          title: "Submit Announcement")
+
+                  // ElevatedButton(
+                  //     onPressed: _submitAnnouncement,
+                  //     child: const Text('Submit Announcement'),
+                  //   ),
                 ],
               ),
             ),

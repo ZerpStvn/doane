@@ -355,7 +355,14 @@ class _MainpageState extends State<Mainpage> {
                     }
                   }),
             ),
-            const EventsFrontpage()
+            const EventsFrontpage(),
+            Container(
+              color: Colors.black,
+              width: MediaQuery.of(context).size.width,
+              child: const Row(
+                children: [Expanded(child: Text('DOANE'))],
+              ),
+            ),
           ],
         ),
       ),

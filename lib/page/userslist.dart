@@ -1,3 +1,4 @@
+import 'package:doane/controller/globalbutton.dart';
 import 'package:doane/controller/userForm.dart';
 import 'package:doane/page/tablelistuser.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +33,16 @@ class _UsersListState extends State<UsersList> {
               const SizedBox(
                 width: 10,
               ),
-              ElevatedButton(
-                  onPressed: () {
+              GlobalButton(
+                  oncallback: () {
                     handleadded();
                   },
-                  child: Text(isloadd == false ? "Add User" : "View Users"))
+                  title: isloadd == false ? "Add User" : "View Users"),
+              // ElevatedButton(
+              //     onPressed: () {
+              //       handleadded();
+              //     },
+              //     child: Text(isloadd == false ? "Add User" : "View Users"))
             ],
           ),
         ),
