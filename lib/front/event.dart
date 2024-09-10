@@ -11,34 +11,41 @@ class EventsFrontpage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(
-          height: 120,
+          height: 50,
         ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+        Column(
           children: [
-            Container(
-              height: 2,
-              width: 50,
-              color: Colors.black,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 2,
+                  width: 50,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                const PrimaryFont(
+                  title: "Events",
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
+                  size: 21,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Container(
+                  height: 2,
+                  width: 50,
+                  color: Colors.black,
+                ),
+              ],
             ),
-            const SizedBox(
-              width: 10,
-            ),
-            const PrimaryFont(
-              title: "Events",
-              color: Colors.black,
-              fontWeight: FontWeight.normal,
-              size: 21,
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Container(
-              height: 2,
-              width: 50,
-              color: Colors.black,
-            ),
+            const Text(
+                textAlign: TextAlign.center,
+                "We have an exciting event coming up at Doane Baptist Church, and we’d love for you to be a part of it!\nBe sure to check our events page for more details and mark your calendar so you don’t miss out.")
           ],
         ),
         const SizedBox(

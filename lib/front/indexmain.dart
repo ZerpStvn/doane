@@ -3,6 +3,7 @@ import 'package:doane/controller/login.dart';
 import 'package:doane/front/event.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -12,6 +13,14 @@ class Mainpage extends StatefulWidget {
 }
 
 class _MainpageState extends State<Mainpage> {
+  final String _url = "https://www.facebook.com/DBCiloilo/";
+
+  Future<void> urllaunchUrl() async {
+    if (!await launchUrl(Uri.parse(_url))) {
+      throw 'Could not launch $_url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,35 +256,139 @@ class _MainpageState extends State<Mainpage> {
                 )
               ],
             ),
-            const SizedBox(
-              height: 120,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            Stack(
               children: [
                 Container(
-                  height: 2,
-                  width: 50,
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  height: 240,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          colorFilter: ColorFilter.mode(
+                              Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
+                          fit: BoxFit.cover,
+                          image: NetworkImage(
+                              "https://images.unsplash.com/photo-1633917526048-c05a2da4b1a5?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
+                ),
+                const Positioned(
+                    left: 30,
+                    bottom: 0,
+                    top: 30,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Join us at 9 AM, 11 AM, 1 PM or 5 PM on Sundays.",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Childcare is available at 9 AM, 11 AM and 5 PM.",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  height: 440,
                   color: Colors.black,
+                  child: const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Our Vision',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Declaration Church exists to develop disciples who will declare and demonstrate the Gospel to Bryan/College Station and beyond.',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 40),
+                    height: 440,
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                "https://images.squarespace-cdn.com/content/v1/5fa17126c93d1d77d88ca067/9cee8551-09f8-4730-84a0-1ae4e02882ca/IMG_8606+%281%29.jpg?format=1500w"))),
+                  ),
                 ),
-                const SizedBox(
-                  width: 10,
+              ],
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 2,
+                      width: 50,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const PrimaryFont(
+                      title: "Anouncements",
+                      color: Colors.black,
+                      fontWeight: FontWeight.normal,
+                      size: 21,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      height: 2,
+                      width: 50,
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
-                const PrimaryFont(
-                  title: "Anouncements",
-                  color: Colors.black,
-                  fontWeight: FontWeight.normal,
-                  size: 21,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  height: 2,
-                  width: 50,
-                  color: Colors.black,
-                ),
+                const Text(
+                    textAlign: TextAlign.center,
+                    "We’re excited to share some important updates with you! Be sure to\ncheck our latest announcement for exciting news about our mission and upcoming events")
               ],
             ),
             const SizedBox(
@@ -355,12 +468,295 @@ class _MainpageState extends State<Mainpage> {
                     }
                   }),
             ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 40),
+                    height: 440,
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                "https://images.unsplash.com/photo-1605385264783-7c02b7f297e2?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  height: 440,
+                  color: Colors.black,
+                  child: const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Our Mission',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Our mission at Doane Baptist Church is to glorify God by proclaiming the Gospel of Jesus Christ, nurturing discipleship through the teaching of God’s Word, and fostering a loving, Christ-centered community. .',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+              ],
+            ),
             const EventsFrontpage(),
+            const SizedBox(
+              height: 19,
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  height: 440,
+                  color: Colors.white,
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'OUR DAILY DEVOTION',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'Start your day with inspiration and guidance! Be sure to check our Daily Devotion for uplifting messages rooted in God’s Word. Whether youre seeking encouragement, wisdom, or a moment of reflection, our devotionals are here to help you grow spiritually every day.',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                            height: 40,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            width: 1, color: Colors.black))),
+                                onPressed: urllaunchUrl,
+                                child: const Text(
+                                  "VISIT US",
+                                  style: TextStyle(color: Colors.black),
+                                )))
+                      ],
+                    ),
+                  ),
+                )),
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 40),
+                    height: 440,
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                "https://images.unsplash.com/photo-1543702404-38c2035462ad?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
+                  ),
+                ),
+              ],
+            ),
             Container(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
               color: Colors.black,
               width: MediaQuery.of(context).size.width,
-              child: const Row(
-                children: [Expanded(child: Text('DOANE'))],
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'DOANE',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Baptist, member of a group of Protestant Christians who share the basic beliefs of most Protestants but who insist that only believers should be baptized',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ],
+                          )),
+                      const SizedBox(
+                        width: 40,
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Discovery',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    "About us",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    "Scheduled Mass",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    "Events",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              TextButton(
+                                  onPressed: () {},
+                                  child: const Text(
+                                    "Announcement",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                            ],
+                          )),
+                      const Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Socials',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ListTile(
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                leading: Icon(Icons.facebook),
+                                title: Text("Facebook"),
+                              ),
+                              ListTile(
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                leading: Icon(Icons.play_arrow_outlined),
+                                title: Text("Youtube"),
+                              ),
+                              ListTile(
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                leading: Icon(Icons.search_outlined),
+                                title: Text("Google"),
+                              )
+                            ],
+                          )),
+                      const Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Contact Us',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ListTile(
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                leading: Icon(Icons.email_outlined),
+                                title: Text("dbcincilo@gmail.com"),
+                              ),
+                              ListTile(
+                                textColor: Colors.white,
+                                iconColor: Colors.white,
+                                leading: Icon(Icons.pin_drop_outlined),
+                                title: Text(
+                                    "Bonifacio Drive, Iloilo City, Philippines"),
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Container(
+                    color: Colors.white,
+                    width: MediaQuery.of(context).size.width * 0.99,
+                    height: 2,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  const ListTile(
+                    textColor: Colors.white,
+                    iconColor: Colors.white,
+                    leading: Icon(Icons.copyright_outlined),
+                    title: Text("Doane 2024"),
+                  ),
+                ],
               ),
             ),
           ],
@@ -369,3 +765,22 @@ class _MainpageState extends State<Mainpage> {
     );
   }
 }
+//  <script type="module">
+    //   // Import the functions you need from the SDKs you need
+    //   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    //   // TODO: Add SDKs for Firebase products that you want to use
+    //   // https://firebase.google.com/docs/web/setup#available-libraries
+
+    //   // Your web app's Firebase configuration
+    //   const firebaseConfig = {
+    //     apiKey: "AIzaSyAC7BHGoMbxGXeBdejCiS2sjMdpOGAk_v4",
+    //     authDomain: "doane-c693d.firebaseapp.com",
+    //     projectId: "doane-c693d",
+    //     storageBucket: "doane-c693d.appspot.com",
+    //     messagingSenderId: "857987860304",
+    //     appId: "1:857987860304:web:967be0c41e4a453e128e55",
+    //   };
+
+    //   // Initialize Firebase
+    //   const app = initializeApp(firebaseConfig);
+    // </script>
