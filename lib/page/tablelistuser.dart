@@ -164,7 +164,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                           DataTable(
                             showCheckboxColumn: false,
                             headingRowColor:
-                                const MaterialStatePropertyAll(maincolor),
+                                const WidgetStatePropertyAll(maincolor),
                             headingRowHeight: 30,
                             border: TableBorder.all(
                                 width: 0.10, color: Colors.black),
