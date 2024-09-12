@@ -2,7 +2,6 @@ import 'package:doane/controller/globalbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 
 class MessagePage extends StatefulWidget {
   final String userId;
@@ -19,21 +18,19 @@ class _MessagePageState extends State<MessagePage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   User? currentuser = FirebaseAuth.instance.currentUser;
-  // Function to send a message
+
   void sendMessage() async {
     if (_messageController.text.trim().isEmpty) {
-      return; // Don't send empty messages
+      return;
     }
 
     await FirebaseFirestore.instance
-        .collection('chats')
-        .doc(currentuser!.uid)
         .collection('messages')
         .doc(widget.userId)
         .collection('chaters')
         .add({
       'text': _messageController.text.trim(),
-      'senderId': widget.userId,
+      'senderId': currentuser!.uid,
       'timestamp': FieldValue.serverTimestamp(),
     });
 
@@ -46,7 +43,7 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   Widget buildMessageItem(Map<String, dynamic> message) {
-    bool isSentByUser = message['senderId'] == widget.userId;
+    bool isSentByUser = message['senderId'] != widget.userId;
     return Align(
       alignment: isSentByUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -74,8 +71,6 @@ class _MessagePageState extends State<MessagePage> {
         children: [
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
-                .collection('chats')
-                .doc(currentuser!.uid)
                 .collection('messages')
                 .doc(widget.userId)
                 .collection('chaters')
@@ -120,7 +115,7 @@ class _MessagePageState extends State<MessagePage> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(

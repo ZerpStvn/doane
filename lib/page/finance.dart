@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:doane/utils/const.dart';
@@ -127,6 +126,7 @@ class _FinancePageState extends State<FinancePage> {
               pw.SizedBox(height: 16),
 
               // Table of all pledge details
+              // ignore: deprecated_member_use
               pw.Table.fromTextArray(
                 context: context,
                 headers: [
@@ -182,7 +182,7 @@ class _FinancePageState extends State<FinancePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                '\Php ${overallTotal.toStringAsFixed(2)}',
+                'Php ${overallTotal.toStringAsFixed(2)}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -212,7 +212,7 @@ class _FinancePageState extends State<FinancePage> {
               return SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(maincolor),
+                  headingRowColor: WidgetStateProperty.all(maincolor),
                   columns: const [
                     DataColumn(
                         label: PrimaryFont(

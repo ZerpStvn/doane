@@ -78,7 +78,7 @@ class _MainpageState extends State<Mainpage> {
                           ],
                         ),
                         const PrimaryFont(
-                          title: "We Love God, We",
+                          title: "I Love God, I",
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           size: 45,

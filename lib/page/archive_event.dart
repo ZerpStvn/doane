@@ -76,7 +76,7 @@ class _ArchivePageState extends State<ArchivePage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(maincolor),
+                    headingRowColor: WidgetStateProperty.all(maincolor),
                     columns: const [
                       DataColumn(
                         label: PrimaryFont(

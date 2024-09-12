@@ -153,7 +153,7 @@ class _MinistryListContState extends State<MinistryListCont> {
               width: MediaQuery.of(context).size.width,
               child: DataTable(
                 showCheckboxColumn: true,
-                headingRowColor: const MaterialStatePropertyAll(maincolor),
+                headingRowColor: const WidgetStatePropertyAll(maincolor),
                 headingRowHeight: 30,
                 border: TableBorder.all(width: 0.10, color: Colors.black),
                 headingTextStyle: const TextStyle(color: Colors.white),

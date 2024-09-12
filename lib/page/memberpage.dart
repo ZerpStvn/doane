@@ -7,6 +7,7 @@ class MembersPage extends StatefulWidget {
   const MembersPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _MembersPageState createState() => _MembersPageState();
 }
 
@@ -115,7 +116,7 @@ class _MembersPageState extends State<MembersPage> {
                             DataColumn(
                               label: Text('Name'),
                             ),
-                            DataColumn(label: Text('Phone')),
+                            DataColumn(label: Text('Ministry')),
                             DataColumn(label: Text('Role')),
                             DataColumn(label: Text('Message')),
                           ],

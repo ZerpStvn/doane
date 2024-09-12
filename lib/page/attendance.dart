@@ -81,7 +81,7 @@ class _AttendanceState extends State<Attendance> {
               return SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(maincolor),
+                  headingRowColor: WidgetStateProperty.all(maincolor),
                   columns: const [
                     DataColumn(
                         label: Text(
