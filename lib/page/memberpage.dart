@@ -117,14 +117,14 @@ class _MembersPageState extends State<MembersPage> {
                               label: Text('Name'),
                             ),
                             DataColumn(label: Text('Ministry')),
-                            DataColumn(label: Text('Role')),
+                            DataColumn(label: Text('Email')),
                             DataColumn(label: Text('Message')),
                           ],
                           rows: filteredUsers.map((user) {
                             return DataRow(cells: [
                               DataCell(Text(safeToString(user['name']))),
                               DataCell(Text(safeToString(user['ministry']))),
-                              DataCell(Text(safeToString(user['role']))),
+                              DataCell(Text(safeToString(user['email']))),
                               DataCell(IconButton(
                                 onPressed: () {
                                   chatuser(user['id']);
