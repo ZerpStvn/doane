@@ -84,7 +84,7 @@ class _MainpageState extends State<Mainpage> {
                           size: 45,
                         ),
                         const PrimaryFont(
-                          title: "Believed in God",
+                          title: "Believe in God",
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           size: 45,

@@ -482,10 +482,10 @@ class _UserFormState extends State<UserForm> {
                 ),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a username';
+                      return 'Please enter a Email';
                     }
                     return null;
                   },
