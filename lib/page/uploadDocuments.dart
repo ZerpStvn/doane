@@ -1,3 +1,4 @@
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html; // For downloading files on web
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/utils/const.dart';
@@ -65,6 +66,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
 
   // Function to download file
   void _downloadFile(String url) {
+    // ignore: unused_local_variable
     html.AnchorElement anchorElement = html.AnchorElement(href: url)
       ..setAttribute('download', '')
       ..click();
@@ -146,7 +148,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: DataTable(
-                    headingRowColor: MaterialStateProperty.all(Colors.blueGrey),
+                    headingRowColor: WidgetStateProperty.all(Colors.blueGrey),
                     columns: const [
                       DataColumn(
                         label: Text(

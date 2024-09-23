@@ -337,7 +337,7 @@ class _UserPledgesState extends State<UserPledges> {
                   width: MediaQuery.of(context).size.width * 0.90,
                   child: DataTable(
                     border: TableBorder.all(width: 1, color: Colors.black),
-                    headingRowColor: MaterialStateProperty.all(maincolor),
+                    headingRowColor: WidgetStateProperty.all(maincolor),
                     columns: const [
                       DataColumn(
                           label: PrimaryFont(

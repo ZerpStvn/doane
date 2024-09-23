@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/globalbutton.dart';
 import 'package:doane/controller/userForm.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
@@ -136,13 +137,19 @@ class _UsersDatalistState extends State<UsersDatalist> {
                       Expanded(
                         flex: 1,
                         child: SizedBox(
-                          height: 50,
-                          width: 30,
-                          child: ElevatedButton(
-                            onPressed: deleteSelectedUsers,
-                            child: const Text("Delete Selected"),
-                          ),
-                        ),
+                            height: 50,
+                            width: 30,
+                            child: GlobalButton(
+                              oncallback: () {
+                                deleteSelectedUsers();
+                              },
+                              title: 'Delete Selected',
+                            )
+                            // ElevatedButton(
+                            //   onPressed: deleteSelectedUsers,
+                            //   child: const Text("Delete Selected"),
+                            // ),
+                            ),
                       ),
                     ],
                   ),
@@ -157,7 +164,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                           DataTable(
                             showCheckboxColumn: false,
                             headingRowColor:
-                                const MaterialStatePropertyAll(maincolor),
+                                const WidgetStatePropertyAll(maincolor),
                             headingRowHeight: 30,
                             border: TableBorder.all(
                                 width: 0.10, color: Colors.black),
