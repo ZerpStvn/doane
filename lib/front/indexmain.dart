@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/front/event.dart';
+import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,6 +19,16 @@ class _MainpageState extends State<Mainpage> {
   Future<void> urllaunchUrl() async {
     if (!await launchUrl(Uri.parse(_url))) {
       throw 'Could not launch $_url';
+    }
+  }
+
+  String checkimage(String dataimage) {
+    if (dataimage.isEmpty) {
+      return "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    } else if (dataimage == "") {
+      return "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    } else {
+      return dataimage;
     }
   }
 
@@ -301,58 +312,6 @@ class _MainpageState extends State<Mainpage> {
                     ))
               ],
             ),
-            Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
-                  height: 440,
-                  color: Colors.black,
-                  child: const Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Our Vision',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          'Declaration Church exists to develop disciples who will declare and demonstrate the Gospel to Bryan/College Station and beyond.',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 40),
-                    height: 440,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                                Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "https://images.squarespace-cdn.com/content/v1/5fa17126c93d1d77d88ca067/9cee8551-09f8-4730-84a0-1ae4e02882ca/IMG_8606+%281%29.jpg?format=1500w"))),
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(
               height: 40,
             ),
@@ -388,7 +347,7 @@ class _MainpageState extends State<Mainpage> {
                 ),
                 const Text(
                     textAlign: TextAlign.center,
-                    "We’re excited to share some important updates with you! Be sure to\ncheck our latest announcement for exciting news about our mission and upcoming events")
+                    "We're excited to share some important updates with you! Be sure to\ncheck our latest announcement for exciting news about our mission and upcoming events")
               ],
             ),
             const SizedBox(
@@ -418,50 +377,60 @@ class _MainpageState extends State<Mainpage> {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (context, index) {
                           var datafile = snapshot.data!.docs[index].data();
-                          return Stack(
-                            children: [
-                              Container(
-                                height: 340,
-                                width: 340,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    image: const DecorationImage(
-                                        colorFilter: ColorFilter.mode(
-                                            Color.fromARGB(139, 0, 0, 0),
-                                            BlendMode.multiply),
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
-                              ),
-                              Positioned(
-                                  bottom: 45,
-                                  left: 20,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      PrimaryFont(
-                                        title: "${datafile['title']}",
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        size: 25,
-                                      ),
-                                      PrimaryFont(
-                                        title:
-                                            "${datafile['date']} ${datafile['time']}",
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.normal,
-                                        size: 17,
-                                      ),
-                                      PrimaryFont(
-                                        title: "${datafile['venue']}",
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.normal,
-                                        size: 17,
-                                      ),
-                                    ],
-                                  ))
-                            ],
+                          var dataID = snapshot.data!.docs[index].id;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PreRegistrationPage(
+                                          docsID: dataID, page: 0)));
+                            },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 340,
+                                  width: 340,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      image: DecorationImage(
+                                          colorFilter: const ColorFilter.mode(
+                                              Color.fromARGB(139, 0, 0, 0),
+                                              BlendMode.multiply),
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                              checkimage(datafile['image'])))),
+                                ),
+                                Positioned(
+                                    bottom: 45,
+                                    left: 20,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        PrimaryFont(
+                                          title: "${datafile['title']}",
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          size: 25,
+                                        ),
+                                        PrimaryFont(
+                                          title:
+                                              "${datafile['date']} ${datafile['time']}",
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                          size: 17,
+                                        ),
+                                        PrimaryFont(
+                                          title: "${datafile['venue']}",
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.normal,
+                                          size: 17,
+                                        ),
+                                      ],
+                                    ))
+                              ],
+                            ),
                           );
                         },
                       );
@@ -518,6 +487,58 @@ class _MainpageState extends State<Mainpage> {
                     ),
                   ),
                 )),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                    child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                  height: 440,
+                  color: Colors.black,
+                  child: const Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Our Vision',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Declaration Church exists to develop disciples who will declare and demonstrate the Gospel to Bryan/College Station and beyond.',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 40),
+                    height: 440,
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                                Color.fromARGB(150, 0, 0, 0), BlendMode.darken),
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                                "https://images.squarespace-cdn.com/content/v1/5fa17126c93d1d77d88ca067/9cee8551-09f8-4730-84a0-1ae4e02882ca/IMG_8606+%281%29.jpg?format=1500w"))),
+                  ),
+                ),
               ],
             ),
             const EventsFrontpage(),

@@ -133,6 +133,7 @@ class _UserFormState extends State<UserForm> {
           'congregation': _congregationController.text,
           'username': _usernameController.text,
           'password': _passwordController.text,
+          'created': Timestamp.now()
         });
         _showSnackbar('Form submitted successfully!');
       } catch (e) {
@@ -186,17 +187,33 @@ class _UserFormState extends State<UserForm> {
     setState(() {
       isloading = true;
     });
+
     try {
-      FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
-              email: _emailController.text, password: _passwordController.text)
-          .then((uid) {
-        _submitForm(uid.user!.uid);
-        setState(() {
-          isloading = false;
-        });
+              email: _emailController.text, password: _passwordController.text);
+
+      _submitForm(userCredential.user!.uid);
+
+      setState(() {
+        isloading = false;
+      });
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        _showSnackbar("The email is already in use by another account.");
+      } else if (e.code == 'weak-password') {
+        _showSnackbar("The password is too weak.");
+      } else if (e.code == 'invalid-email') {
+        _showSnackbar("The email address is not valid.");
+      } else {
+        _showSnackbar("Error creating account: ${e.message}");
+      }
+
+      setState(() {
+        isloading = false;
       });
     } catch (error) {
+      // General error handling
       _showSnackbar("Error creating account: $error");
       setState(() {
         isloading = false;
@@ -482,10 +499,10 @@ class _UserFormState extends State<UserForm> {
                 ),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Username'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a Email';
+                      return 'Please enter a username';
                     }
                     return null;
                   },

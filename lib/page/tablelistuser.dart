@@ -47,6 +47,10 @@ class _UsersDatalistState extends State<UsersDatalist> {
         List<Map<String, dynamic>> fetchedUsers = [];
         for (var doc in usersSnapshot.docs) {
           var data = doc.data() as Map<String, dynamic>;
+          Timestamp createdTimestamp = data['created'] ?? Timestamp.now();
+          DateTime createdDate = createdTimestamp.toDate();
+          bool isOldMember = DateTime.now().difference(createdDate).inDays > 30;
+
           fetchedUsers.add({
             'id': doc.id,
             'selected': false, // To track selection state
@@ -56,6 +60,8 @@ class _UsersDatalistState extends State<UsersDatalist> {
             'role': data['role']?.toString() ?? '',
             'membershipStatus': data['membershipStatus']?.toString() ?? '',
             'phone': data['phone']?.toString() ?? '',
+            'created': createdDate,
+            'memberStatus': isOldMember ? 'Old Member' : 'New Member',
           });
         }
 
@@ -197,6 +203,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                               const DataColumn(label: Text("Role")),
                               const DataColumn(label: Text("Status")),
                               const DataColumn(label: Text("Phone")),
+                              const DataColumn(label: Text("Membership")),
                               const DataColumn(label: Text("Actions")),
                             ],
                             rows: List<DataRow>.generate(
@@ -235,6 +242,8 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                     DataCell(Text(user['role'])),
                                     DataCell(Text(user['membershipStatus'])),
                                     DataCell(Text(user['phone'])),
+                                    // New DataCell for Member Status (Old/New)
+                                    DataCell(Text(user['memberStatus'])),
                                     DataCell(Row(
                                       children: [
                                         Expanded(

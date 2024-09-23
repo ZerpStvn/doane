@@ -3,14 +3,14 @@ import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 
-class EventsFrontpage extends StatefulWidget {
-  const EventsFrontpage({super.key});
+class AnnouncementFront extends StatefulWidget {
+  const AnnouncementFront({super.key});
 
   @override
-  State<EventsFrontpage> createState() => _EventsFrontpageState();
+  State<AnnouncementFront> createState() => _AnnouncementFrontState();
 }
 
-class _EventsFrontpageState extends State<EventsFrontpage> {
+class _AnnouncementFrontState extends State<AnnouncementFront> {
   String checkimage(String dataimage) {
     if (dataimage.isEmpty) {
       return "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -24,10 +24,9 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(
-          height: 50,
+          height: 40,
         ),
         Column(
           children: [
@@ -44,7 +43,7 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                   width: 10,
                 ),
                 const PrimaryFont(
-                  title: "Events",
+                  title: "Anouncements",
                   color: Colors.black,
                   fontWeight: FontWeight.normal,
                   size: 21,
@@ -61,7 +60,7 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
             ),
             const Text(
                 textAlign: TextAlign.center,
-                "We have an exciting event coming up at Doane Baptist Church, and we'd love for you to be a part of it!\nBe sure to check our events page for more details and mark your calendar so you don’t miss out.")
+                "We’re excited to share some important updates with you! Be sure to\ncheck our latest announcement for exciting news about our mission and upcoming events")
           ],
         ),
         const SizedBox(
@@ -69,7 +68,8 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
         ),
         Center(
           child: FutureBuilder(
-              future: FirebaseFirestore.instance.collection('events').get(),
+              future:
+                  FirebaseFirestore.instance.collection('announcements').get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container();
@@ -96,7 +96,7 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PreRegistrationPage(
-                                      docsID: dataID, page: 1)));
+                                      docsID: dataID, page: 0)));
                         },
                         child: Stack(
                           children: [
@@ -147,7 +147,7 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                   );
                 }
               }),
-        )
+        ),
       ],
     );
   }

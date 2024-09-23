@@ -28,7 +28,8 @@ class _LoginContState extends State<LoginCont> {
   @override
   void initState() {
     super.initState();
-    _email.text = "doane@doanechurch.com";
+    // _email.text = "doane@doanechurch.com";
+    _email.text = "sample@gmail.com";
     _pass.text = "123456";
   }
 
