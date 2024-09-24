@@ -55,13 +55,14 @@ class _UsersDatalistState extends State<UsersDatalist> {
             'id': doc.id,
             'selected': false, // To track selection state
             'name': data['name']?.toString() ?? '',
-            'ministry': data['ministry']?.toString() ?? '',
+            // 'ministry': data['ministry']?.toString() ?? '',
             'email': data['email']?.toString() ?? '',
             'role': data['role']?.toString() ?? '',
             'membershipStatus': data['membershipStatus']?.toString() ?? '',
             'phone': data['phone']?.toString() ?? '',
             'created': createdDate,
             'memberStatus': isOldMember ? 'Old Member' : 'New Member',
+            'verif': data['verif'],
           });
         }
 
@@ -116,6 +117,21 @@ class _UsersDatalistState extends State<UsersDatalist> {
     });
   }
 
+  Future<void> updatedata(String id) async {
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(id)
+          .update({"verif": 3});
+      setState(() {
+        fetchUsers();
+      });
+      _showSnackbar("user is now verified");
+    } catch (error) {
+      _showSnackbar("There was an error, Please try again later");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return isedit == false
@@ -140,23 +156,23 @@ class _UsersDatalistState extends State<UsersDatalist> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                            height: 50,
-                            width: 30,
-                            child: GlobalButton(
-                              oncallback: () {
-                                deleteSelectedUsers();
-                              },
-                              title: 'Delete Selected',
-                            )
-                            // ElevatedButton(
-                            //   onPressed: deleteSelectedUsers,
-                            //   child: const Text("Delete Selected"),
-                            // ),
-                            ),
-                      ),
+                      // Expanded(
+                      //   flex: 1,
+                      //   child: SizedBox(
+                      //       height: 50,
+                      //       width: 30,
+                      //       child: GlobalButton(
+                      //         oncallback: () {
+                      //           deleteSelectedUsers();
+                      //         },
+                      //         title: 'Delete Selected',
+                      //       )
+                      //       // ElevatedButton(
+                      //       //   onPressed: deleteSelectedUsers,
+                      //       //   child: const Text("Delete Selected"),
+                      //       // ),
+                      //       ),
+                      // ),
                     ],
                   ),
                 ),
@@ -177,12 +193,12 @@ class _UsersDatalistState extends State<UsersDatalist> {
                             headingTextStyle:
                                 const TextStyle(color: Colors.white),
                             columns: [
-                              DataColumn(
-                                label: const Text("Select"),
-                                onSort: (int columnIndex, bool ascending) {
-                                  selectAll(ascending);
-                                },
-                              ),
+                              // DataColumn(
+                              //   label: const Text("Select"),
+                              //   onSort: (int columnIndex, bool ascending) {
+                              //     selectAll(ascending);
+                              //   },
+                              // ),
                               const DataColumn(label: Text("Icon")),
                               DataColumn(
                                 label: const Text("Name"),
@@ -198,7 +214,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                   });
                                 },
                               ),
-                              const DataColumn(label: Text("Ministry")),
+                              // const DataColumn(label: Text("Ministry")),
                               const DataColumn(label: Text("Email")),
                               const DataColumn(label: Text("Role")),
                               const DataColumn(label: Text("Status")),
@@ -218,14 +234,14 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                     });
                                   },
                                   cells: [
-                                    DataCell(Checkbox(
-                                      value: user['selected'],
-                                      onChanged: (bool? selected) {
-                                        setState(() {
-                                          user['selected'] = selected ?? false;
-                                        });
-                                      },
-                                    )),
+                                    // DataCell(Checkbox(
+                                    //   value: user['selected'],
+                                    //   onChanged: (bool? selected) {
+                                    //     setState(() {
+                                    //       user['selected'] = selected ?? false;
+                                    //     });
+                                    //   },
+                                    // )),
                                     DataCell(Container(
                                       height: 40,
                                       width: 40,
@@ -237,13 +253,31 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                       ),
                                     )),
                                     DataCell(Text(user['name'])),
-                                    DataCell(Text(user['ministry'])),
+                                    // DataCell(Text(user['ministry'])),
                                     DataCell(Text(user['email'])),
                                     DataCell(Text(user['role'])),
-                                    DataCell(Text(user['membershipStatus'])),
+                                    DataCell(GestureDetector(
+                                      onTap: () => updatedata(user['id']),
+                                      child: Container(
+                                          padding: const EdgeInsets.all(3),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: user['verif'] != 3
+                                                  ? Colors.red
+                                                  : maincolor),
+                                          child: Text(
+                                            user['verif'] == 3
+                                                ? user['membershipStatus']
+                                                : "Not Verified",
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          )),
+                                    )),
                                     DataCell(Text(user['phone'])),
                                     // New DataCell for Member Status (Old/New)
                                     DataCell(Text(user['memberStatus'])),
+
                                     DataCell(Row(
                                       children: [
                                         Expanded(

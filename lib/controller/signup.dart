@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
 import 'package:doane/model/users.dart';
@@ -8,16 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class UserForm extends StatefulWidget {
-  final bool? isedit;
-  final String? userid;
-  const UserForm({super.key, this.isedit, this.userid});
+class UserRegistration extends StatefulWidget {
+  const UserRegistration({super.key});
 
   @override
-  State<UserForm> createState() => _UserFormState();
+  State<UserRegistration> createState() => _UserRegistrationState();
 }
 
-class _UserFormState extends State<UserForm> {
+class _UserRegistrationState extends State<UserRegistration> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -35,12 +31,12 @@ class _UserFormState extends State<UserForm> {
   final _passwordController = TextEditingController();
   final _newMinistryController = TextEditingController();
 
-  String _role = 'Member';
+  // String _role = 'Member';
   bool _isBaptised = false;
   String _gender = 'Male';
   String _maritalStatus = 'Single';
-  String _membershipStatus = 'Active';
-  List<String> _selectedMinistries = [];
+  // String _membershipStatus = 'Active';
+  final List<String> _selectedMinistries = [];
   List<String> _ministryList = [];
   bool isLoading = false;
 
@@ -95,8 +91,8 @@ class _UserFormState extends State<UserForm> {
           'phone': _phoneController.text,
           'gender': _gender,
           'maritalStatus': _maritalStatus,
-          'membershipStatus': _membershipStatus,
-          'role': _role,
+          'membershipStatus': 'Active',
+          'role': 'member',
           'ministries': _selectedMinistries,
           'isBaptised': _isBaptised,
           'emergencyContactName': _emergencyContactNameController.text,
@@ -108,7 +104,7 @@ class _UserFormState extends State<UserForm> {
           'username': _usernameController.text,
           'password': _passwordController.text,
           'created': Timestamp.now(),
-          'verif': 3
+          'verif': 2
         });
         _showSnackbar('Form submitted successfully!');
       } catch (e) {
@@ -353,41 +349,41 @@ class _UserFormState extends State<UserForm> {
                       });
                     },
                   ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _membershipStatus,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Membership Status'),
-                    items: ['Active', 'Inactive', 'Visitor']
-                        .map((status) => DropdownMenuItem<String>(
-                              value: status,
-                              child: Text(status),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _membershipStatus = value!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _role,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Role'),
-                    items: ['Member', 'Staff', 'Volunteer']
-                        .map((role) => DropdownMenuItem<String>(
-                              value: role,
-                              child: Text(role),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _role = value!;
-                      });
-                    },
-                  ),
+                  // const SizedBox(height: 16),
+                  // DropdownButtonFormField<String>(
+                  //   value: _membershipStatus,
+                  //   decoration: const InputDecoration(
+                  //       border: OutlineInputBorder(),
+                  //       labelText: 'Membership Status'),
+                  //   items: ['Active', 'Inactive', 'Visitor']
+                  //       .map((status) => DropdownMenuItem<String>(
+                  //             value: status,
+                  //             child: Text(status),
+                  //           ))
+                  //       .toList(),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _membershipStatus = value!;
+                  //     });
+                  //   },
+                  // ),
+                  // const SizedBox(height: 16),
+                  // DropdownButtonFormField<String>(
+                  //   value: _role,
+                  //   decoration: const InputDecoration(
+                  //       border: OutlineInputBorder(), labelText: 'Role'),
+                  //   items: ['Member', 'Staff', 'Volunteer']
+                  //       .map((role) => DropdownMenuItem<String>(
+                  //             value: role,
+                  //             child: Text(role),
+                  //           ))
+                  //       .toList(),
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _role = value!;
+                  //     });
+                  //   },
+                  // ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _newMinistryController,
@@ -518,7 +514,7 @@ class _UserFormState extends State<UserForm> {
                         labelText: 'Email Address'),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a Email';
+                        return 'Please enter a Email Address';
                       }
                       return null;
                     },

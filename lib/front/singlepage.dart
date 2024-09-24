@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doane/controller/login.dart';
+//import 'package:doane/controller/login.dart';
 import 'package:doane/front/announcementfront.dart';
 import 'package:doane/front/event.dart';
 import 'package:doane/front/indexmain.dart';

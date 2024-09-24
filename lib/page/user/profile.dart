@@ -123,7 +123,7 @@ class _UserProfileState extends State<UserProfile> {
           'maritalStatus': _maritalStatus,
           'membershipStatus': _membershipStatus,
           'role': _role,
-          'ministry': _ministry,
+          'ministry': '',
           'isBaptised': _isBaptised,
           'emergencyContactName': _emergencyContactNameController.text,
           'emergencyContactPhone': _emergencyContactPhoneController.text,
@@ -364,39 +364,39 @@ class _UserProfileState extends State<UserProfile> {
                     });
                   },
                 ),
-                DropdownButtonFormField<String>(
-                  value: _role,
-                  decoration: const InputDecoration(labelText: 'Role'),
-                  items: ['Member', 'Staff', 'Volunteer']
-                      .map((role) => DropdownMenuItem<String>(
-                            value: role,
-                            child: Text(role),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _role = value!;
-                    });
-                  },
-                ),
-                _ministryList.isNotEmpty
-                    ? DropdownButtonFormField<String>(
-                        value: _ministry,
-                        decoration:
-                            const InputDecoration(labelText: 'Ministry'),
-                        items: _ministryList
-                            .map((ministry) => DropdownMenuItem<String>(
-                                  value: ministry,
-                                  child: Text(ministry),
-                                ))
-                            .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _ministry = value!;
-                          });
-                        },
-                      )
-                    : const Text('No Ministries available...'),
+                // DropdownButtonFormField<String>(
+                //   value: _role,
+                //   decoration: const InputDecoration(labelText: 'Role'),
+                //   items: ['Member', 'Staff', 'Volunteer']
+                //       .map((role) => DropdownMenuItem<String>(
+                //             value: role,
+                //             child: Text(role),
+                //           ))
+                //       .toList(),
+                //   onChanged: (value) {
+                //     setState(() {
+                //       _role = value!;
+                //     });
+                //   },
+                // ),
+                // _ministryList.isNotEmpty
+                //     ? DropdownButtonFormField<String>(
+                //         value: _ministry,
+                //         decoration:
+                //             const InputDecoration(labelText: 'Ministry'),
+                //         items: _ministryList
+                //             .map((ministry) => DropdownMenuItem<String>(
+                //                   value: ministry,
+                //                   child: Text(ministry),
+                //                 ))
+                //             .toList(),
+                //         onChanged: (value) {
+                //           setState(() {
+                //             _ministry = value!;
+                //           });
+                //         },
+                //       )
+                //     : const Text('No Ministries available...'),
                 SwitchListTile(
                   title: const Text('Baptised'),
                   value: _isBaptised,

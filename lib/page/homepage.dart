@@ -253,24 +253,24 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(
                             height: 17,
                           ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 5;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.church_outlined,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Pledges",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 13,
-                          ),
+                          // ListTile(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       currentpage = 5;
+                          //     });
+                          //   },
+                          //   leading: const Icon(
+                          //     Icons.church_outlined,
+                          //     color: Colors.white,
+                          //   ),
+                          //   title: const PrimaryFont(
+                          //     title: "Pledges",
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                          // const SizedBox(
+                          //   height: 13,
+                          // ),
                           ListTile(
                             onTap: () {
                               setState(() {

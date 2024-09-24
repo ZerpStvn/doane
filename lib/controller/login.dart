@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/signup.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
 import 'package:doane/page/homepage.dart';
 import 'package:doane/utils/const.dart';
@@ -120,6 +122,19 @@ class _LoginContState extends State<LoginCont> {
                         ),
                       ),
                       const SizedBox(height: 20),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UserRegistration()));
+                          },
+                          child: const Text(
+                            "Don't have an account? Pre Register",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                      const SizedBox(height: 20),
                       SizedBox(
                         width: 260,
                         height: 55,
@@ -152,21 +167,49 @@ class _LoginContState extends State<LoginCont> {
     });
     try {
       if (_formkey.currentState!.validate()) {
-        await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
+        // Authenticate the user using Firebase Auth
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _email.text,
           password: _pass.text,
-        )
-            .then((value) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePage()),
-            (route) => false,
-          );
+        );
+
+        // Fetch the user data from Firestore
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (userDoc.exists) {
+          // Check if the 'verif' field is present
+          int verifStatus = userDoc['verif'] ?? 0;
+
+          if (verifStatus == 3) {
+            // Redirect to the homepage if verif = 3
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              (route) => false,
+            );
+          } else if (verifStatus == 2) {
+            // Show error message if verif = 2
+            setState(() {
+              errormessage = "Not yet Verified";
+              isloading = false;
+            });
+          } else {
+            // Handle other verif statuses if needed
+            setState(() {
+              errormessage = "Verification status unknown";
+              isloading = false;
+            });
+          }
+        } else {
           setState(() {
+            errormessage = "User data not found";
             isloading = false;
           });
-        });
+        }
       }
     } catch (e) {
       setState(() {

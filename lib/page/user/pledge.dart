@@ -498,11 +498,14 @@ class _UserPledgesState extends State<UserPledges> {
   Future<void> addPledges2(String id, String name, double pledgetotal) async {
     try {
       if (_formkey2.currentState!.validate()) {
-        // Calculate the remaining total after deducting the pledge amount
         double pledgeAmount = double.parse(_pledgeamountController.text);
+        if (pledgeAmount > pledgetotal) {
+          _showSnackbar("Pledge amount exceeds the remaining pledge total.");
+          return;
+        }
+
         var totalvalue = pledgetotal - pledgeAmount;
 
-        // Add the new pledge to the 'listPledges' collection
         await FirebaseFirestore.instance
             .collection('listPledges')
             .doc(id)
@@ -706,7 +709,7 @@ class _UserPledgesState extends State<UserPledges> {
                       crossAxisCount: 4,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 2 / 2.3,
+                      childAspectRatio: 2 / 2.0,
                     ),
                     itemCount: pledges.length,
                     itemBuilder: (context, index) {
@@ -719,16 +722,36 @@ class _UserPledgesState extends State<UserPledges> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 180,
-                                decoration: BoxDecoration(
-                                    color: Colors.blue,
-                                    borderRadius: BorderRadius.circular(8),
-                                    image: const DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            'https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'))),
+                              Stack(
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 210,
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: const DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                'https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'))),
+                                  ),
+                                  Positioned(
+                                      child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: pledge['amount'] != 0
+                                            ? maincolor
+                                            : Colors.red),
+                                    child: Text(
+                                      pledge['amount'] != 0
+                                          ? "Ongoing"
+                                          : "Finished",
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ))
+                                ],
                               ),
                               Text(
                                 pledge['name'],
