@@ -4,6 +4,7 @@ import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 import 'package:intl/intl.dart';
 import 'dart:typed_data';
 
@@ -55,16 +56,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     }
   }
 
-  // Future<void> _pickImage() async {
-  //   final imageInfo = await ImagePickerWeb.getImageInfo();
+  Future<void> _pickImage() async {
+    final imageInfo = await ImagePickerWeb.getImageInfo();
 
-  //   if (imageInfo != null && imageInfo.data != null) {
-  //     setState(() {
-  //       _imageData = imageInfo.data;
-  //       _imageName = imageInfo.fileName;
-  //     });
-  //   }
-  // }
+    if (imageInfo != null && imageInfo.data != null) {
+      setState(() {
+        _imageData = imageInfo.data;
+        _imageName = imageInfo.fileName;
+      });
+    }
+  }
 
   Future<void> _submitAnnouncement() async {
     if (_formKey.currentState!.validate()) {
@@ -274,35 +275,34 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                     readOnly: true,
                   ),
                   const SizedBox(height: 16),
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: TextFormField(
-                  //         controller: TextEditingController(
-                  //           text: _imageName ?? '',
-                  //         ),
-                  //         decoration: const InputDecoration(
-                  //           labelText: 'Image',
-                  //           border: OutlineInputBorder(),
-                  //           filled: true,
-                  //           fillColor: Colors.white,
-                  //         ),
-                  //         readOnly: true,
-                  //         validator: (value) {
-                  //           if (value == null || value.isEmpty) {
-                  //             return 'Please select an image';
-                  //           }
-                  //           return null;
-                  //         },
-                  //       ),
-                  //     ),
-                  //     IconButton(
-                  //       icon: const Icon(Icons.image),
-                  //       onPressed: _pickImage,
-                  //     ),
-                  //   ],
-                  // ),
-
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: TextEditingController(
+                            text: _imageName ?? '',
+                          ),
+                          decoration: const InputDecoration(
+                            labelText: 'Image',
+                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select an image';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.image),
+                        onPressed: _pickImage,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _othersController,
@@ -320,12 +320,11 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                           oncallback: () {
                             _submitAnnouncement();
                           },
-                          title: "Submit Announcement")
-
+                          title: "Submit Announcement"),
                   // ElevatedButton(
-                  //     onPressed: _submitAnnouncement,
-                  //     child: const Text('Submit Announcement'),
-                  //   ),
+                  //   onPressed: _submitAnnouncement,
+                  //   child: const Text('Submit Announcement'),
+                  //),
                 ],
               ),
             ),
@@ -368,9 +367,9 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                       DataColumn(
                           label: Text('Time',
                               style: TextStyle(color: Colors.white))),
-                      // DataColumn(
-                      //     label: Text('Image',
-                      //         style: TextStyle(color: Colors.white))),
+                      DataColumn(
+                          label: Text('Image',
+                              style: TextStyle(color: Colors.white))),
                       DataColumn(
                           label: Text('Others',
                               style: TextStyle(color: Colors.white))),
@@ -387,18 +386,18 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                             PrimaryFont(title: "${announcement['venue']}")),
                         DataCell(PrimaryFont(title: "${announcement['date']}")),
                         DataCell(PrimaryFont(title: "${announcement['time']}")),
-                        // announcement['image'] == null
-                        //     ? const DataCell(Text("No Image"))
-                        //     : DataCell(Container(
-                        //         height: 50,
-                        //         width: 50,
-                        //         decoration: BoxDecoration(
-                        //           image: DecorationImage(
-                        //             fit: BoxFit.cover,
-                        //             image: NetworkImage(announcement['image']),
-                        //           ),
-                        //         ),
-                        //       )),
+                        announcement['image'] == null
+                            ? const DataCell(Text("No Image"))
+                            : DataCell(Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(announcement['image']),
+                                  ),
+                                ),
+                              )),
                         DataCell(Text(announcement['others'])),
                         DataCell(
                           IconButton(

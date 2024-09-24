@@ -307,21 +307,22 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(
                             height: 13,
                           ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 8;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.credit_card,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Finance",
-                              color: Colors.white,
-                            ),
-                          ),
+                          // ListTile(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       currentpage = 8;
+                          //     });
+                          //   },
+                          //   leading: const Icon(
+                          //     Icons.credit_card,
+                          //     color: Colors.white,
+                          //   ),
+                          //   title: const PrimaryFont(
+                          //     title: "Finance",
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+
                           ListTile(
                             onTap: () {
                               setState(() {
