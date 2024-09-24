@@ -209,7 +209,7 @@ class _MainpageState extends State<Mainpage> {
                     ),
                     PrimaryFont2(
                       title:
-                          "Far far away,creative behind the word mountains, far from the\ncountries Vokalia and Consonantia, there live the success blind texts.\nSeparated they live in Bookmarksgrove",
+                          "Founded by Northern Baptists that took a more fundamentalist turn during the\nmodernist-fundamentalist controversy in the Northern Baptist Convention. It is one of the largest Baptist \ncongregations in Iloilo, and home to Doane Baptist Seminary. It recently dedicated its new sanctuary built on the\nsame location where the old structure stood right across the Provincial Capitol",
                       size: 21,
                       fontWeight: FontWeight.normal,
                     ),
@@ -217,8 +217,7 @@ class _MainpageState extends State<Mainpage> {
                       height: 30,
                     ),
                     PrimaryFont2(
-                      title:
-                          "A small river named Duden flows by their place and supplies it with\nthe necessary regelialia. It is a paradisematic country, in which\nroasted parts of sentences fly into your mouth.",
+                      title: "",
                       size: 21,
                       fontWeight: FontWeight.normal,
                     ),

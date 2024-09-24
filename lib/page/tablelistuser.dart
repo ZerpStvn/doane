@@ -199,7 +199,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                               //     selectAll(ascending);
                               //   },
                               // ),
-                              const DataColumn(label: Text("Icon")),
+                              // const DataColumn(label: Text("Icon")),
                               DataColumn(
                                 label: const Text("Name"),
                                 onSort: (int columnIndex, bool ascending) {
@@ -242,22 +242,26 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                     //     });
                                     //   },
                                     // )),
-                                    DataCell(Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: NetworkImage("assets/man.png"),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    )),
+                                    // DataCell(Container(
+                                    //   height: 40,
+                                    //   width: 40,
+                                    //   decoration: const BoxDecoration(
+                                    //     image: DecorationImage(
+                                    //       image: NetworkImage("assets/man.png"),
+                                    //       fit: BoxFit.cover,
+                                    //     ),
+                                    //   ),
+                                    // )),
                                     DataCell(Text(user['name'])),
                                     // DataCell(Text(user['ministry'])),
                                     DataCell(Text(user['email'])),
                                     DataCell(Text(user['role'])),
                                     DataCell(GestureDetector(
-                                      onTap: () => updatedata(user['id']),
+                                      onTap: () {
+                                        user['verif'] != 3
+                                            ? updatedata(user['id'])
+                                            : null;
+                                      },
                                       child: Container(
                                           padding: const EdgeInsets.all(3),
                                           decoration: BoxDecoration(
