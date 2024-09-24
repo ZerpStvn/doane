@@ -10,6 +10,7 @@ import 'package:doane/page/memberpage.dart';
 import 'package:doane/page/pledge.dart';
 import 'package:doane/page/uploadDocuments.dart';
 import 'package:doane/page/user/attendevent.dart';
+import 'package:doane/page/user/list_pledges.dart';
 import 'package:doane/page/user/pledge.dart';
 import 'package:doane/page/user/profile.dart';
 import 'package:doane/page/userslist.dart';
@@ -70,6 +71,8 @@ class _HomePageState extends State<HomePage> {
       return UserProfile(isedit: true, userid: currentuser!.uid);
     } else if (currentpage == 5) {
       return const PledgesPage();
+    } else if (currentpage == 4) {
+      return const ListUserPledges();
     } else {
       return const UsersList();
     }
@@ -434,6 +437,24 @@ class _HomePageState extends State<HomePage> {
                           ),
                           title: const PrimaryFont(
                             title: "Pledges",
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 13,
+                        ),
+                        ListTile(
+                          onTap: () {
+                            setState(() {
+                              currentpage = 4;
+                            });
+                          },
+                          leading: const Icon(
+                            Icons.list_alt_outlined,
+                            color: Colors.white,
+                          ),
+                          title: const PrimaryFont(
+                            title: "List Of Pledges",
                             color: Colors.white,
                           ),
                         ),

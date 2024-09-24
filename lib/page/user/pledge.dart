@@ -506,7 +506,7 @@ class _UserPledgesState extends State<UserPledges> {
         await FirebaseFirestore.instance
             .collection('listPledges')
             .doc(id)
-            .collection('pledge')
+            .collection('cpledge')
             .add({
           'amount': pledgeAmount, // Storing the amount as double
           'pledgeid': id,
