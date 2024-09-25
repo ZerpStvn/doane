@@ -124,7 +124,7 @@ class _AttendEventPageState extends State<AttendEventPage> {
               crossAxisCount: 4,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
-              childAspectRatio: 2 / 2.5),
+              childAspectRatio: 2 / 2.9),
           itemCount: events.length,
           itemBuilder: (context, index) {
             var event = events[index];

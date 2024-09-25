@@ -709,7 +709,7 @@ class _UserPledgesState extends State<UserPledges> {
                       crossAxisCount: 4,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 2 / 2.0,
+                      childAspectRatio: 2 / 2.9,
                     ),
                     itemCount: pledges.length,
                     itemBuilder: (context, index) {
