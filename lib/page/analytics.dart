@@ -132,7 +132,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       PieChartSectionData(
         value: totalAttendees.toDouble(),
         color: Colors.blue,
-        title: 'Attended: $totalAttendees',
+        title: 'Attendees: $totalAttendees',
         radius: 60,
         titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
@@ -207,7 +207,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const LegendItem(color: Colors.blue, text: 'Attended'),
+                      const LegendItem(color: Colors.blue, text: 'Attendees'),
                       const LegendItem(color: Colors.orange, text: 'Remaining'),
                     ],
                   ),

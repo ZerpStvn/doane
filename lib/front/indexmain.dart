@@ -209,7 +209,7 @@ class _MainpageState extends State<Mainpage> {
                     ),
                     PrimaryFont2(
                       title:
-                          "Founded by Northern Baptists that took a more fundamentalist turn during the\nmodernist-fundamentalist controversy in the Northern Baptist Convention. It is one of the largest Baptist \ncongregations in Iloilo, and home to Doane Baptist Seminary. It recently dedicated its new sanctuary built on the\nsame location where the old structure stood right across the Provincial Capitol",
+                          "Founded by Northern Baptists that took a more fundamentalist turn during the\nmodernist-fundamentalist controversy in the Northern Baptist Convention. It is\none of the largest Baptist congregations in Iloilo, and home to Doane Baptist Seminary.\nIt recently dedicated its new sanctuary built on the\nsame location where the old structure stood right across the Provincial Capitol",
                       size: 21,
                       fontWeight: FontWeight.normal,
                     ),
