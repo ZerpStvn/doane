@@ -140,7 +140,7 @@ class _LoginContState extends State<LoginCont> {
                         height: 55,
                         child: ButtonCallback(
                           function: handlesubmit,
-                          title: "Submit",
+                          title: "Login",
                         ),
                       ),
                       const SizedBox(height: 10),

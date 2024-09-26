@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/globalbutton.dart';
+import 'package:doane/controller/isedit.dart';
 import 'package:doane/controller/userForm.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
@@ -156,23 +157,6 @@ class _UsersDatalistState extends State<UsersDatalist> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      // Expanded(
-                      //   flex: 1,
-                      //   child: SizedBox(
-                      //       height: 50,
-                      //       width: 30,
-                      //       child: GlobalButton(
-                      //         oncallback: () {
-                      //           deleteSelectedUsers();
-                      //         },
-                      //         title: 'Delete Selected',
-                      //       )
-                      //       // ElevatedButton(
-                      //       //   onPressed: deleteSelectedUsers,
-                      //       //   child: const Text("Delete Selected"),
-                      //       // ),
-                      //       ),
-                      // ),
                     ],
                   ),
                 ),
@@ -193,13 +177,6 @@ class _UsersDatalistState extends State<UsersDatalist> {
                             headingTextStyle:
                                 const TextStyle(color: Colors.white),
                             columns: [
-                              // DataColumn(
-                              //   label: const Text("Select"),
-                              //   onSort: (int columnIndex, bool ascending) {
-                              //     selectAll(ascending);
-                              //   },
-                              // ),
-                              // const DataColumn(label: Text("Icon")),
                               DataColumn(
                                 label: const Text("Name"),
                                 onSort: (int columnIndex, bool ascending) {
@@ -234,26 +211,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                     });
                                   },
                                   cells: [
-                                    // DataCell(Checkbox(
-                                    //   value: user['selected'],
-                                    //   onChanged: (bool? selected) {
-                                    //     setState(() {
-                                    //       user['selected'] = selected ?? false;
-                                    //     });
-                                    //   },
-                                    // )),
-                                    // DataCell(Container(
-                                    //   height: 40,
-                                    //   width: 40,
-                                    //   decoration: const BoxDecoration(
-                                    //     image: DecorationImage(
-                                    //       image: NetworkImage("assets/man.png"),
-                                    //       fit: BoxFit.cover,
-                                    //     ),
-                                    //   ),
-                                    // )),
                                     DataCell(Text(user['name'])),
-                                    // DataCell(Text(user['ministry'])),
                                     DataCell(Text(user['email'])),
                                     DataCell(Text(user['role'])),
                                     DataCell(GestureDetector(
@@ -279,9 +237,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                           )),
                                     )),
                                     DataCell(Text(user['phone'])),
-                                    // New DataCell for Member Status (Old/New)
                                     DataCell(Text(user['memberStatus'])),
-
                                     DataCell(Row(
                                       children: [
                                         Expanded(
@@ -331,7 +287,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
 
   Widget useform() {
     if (isedit == true) {
-      return UserForm(
+      return UserFormised(
         isedit: true,
         userid: userid,
       );
