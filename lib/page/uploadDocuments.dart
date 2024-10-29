@@ -16,6 +16,8 @@ class FileUploadPage extends StatefulWidget {
 
 class _FileUploadPageState extends State<FileUploadPage> {
   bool isLoading = false;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   // Function to upload file
   Future<void> _uploadFile() async {
@@ -31,25 +33,21 @@ class _FileUploadPageState extends State<FileUploadPage> {
       });
 
       try {
-        // Extract file type (extension)
         String fileType = file.extension ?? 'Unknown';
-
-        // Upload to Firebase Storage
         String fileName = file.name;
         String filePath = 'uploads/$fileName';
         Reference storageReference =
             FirebaseStorage.instance.ref().child(filePath);
-
         UploadTask uploadTask = storageReference.putData(file.bytes!);
 
         TaskSnapshot taskSnapshot = await uploadTask;
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-        // Save file info to Firestore
         await FirebaseFirestore.instance.collection('files').add({
           'name': fileName,
+          'name_lower': fileName.toLowerCase(), // Lowercase field for search
           'url': downloadUrl,
-          'type': fileType, // Store the file type
+          'type': fileType,
           'uploadedAt': DateFormat.yMMMd().format(DateTime.now()),
         });
 
@@ -64,9 +62,22 @@ class _FileUploadPageState extends State<FileUploadPage> {
     }
   }
 
+  // Function to get the filtered data from Firestore based on the search query
+  Stream<QuerySnapshot> _getFilteredFiles() {
+    if (_searchQuery.isEmpty) {
+      return FirebaseFirestore.instance.collection('files').snapshots();
+    } else {
+      String queryLower = _searchQuery.toLowerCase();
+      return FirebaseFirestore.instance
+          .collection('files')
+          .where('name_lower', isGreaterThanOrEqualTo: queryLower)
+          .where('name_lower', isLessThanOrEqualTo: '$queryLower\uf8ff')
+          .snapshots();
+    }
+  }
+
   // Function to download file
   void _downloadFile(String url) {
-    // ignore: unused_local_variable
     html.AnchorElement anchorElement = html.AnchorElement(href: url)
       ..setAttribute('download', '')
       ..click();
@@ -76,21 +87,18 @@ class _FileUploadPageState extends State<FileUploadPage> {
   Future<void> _deleteAndArchiveFile(String fileId, String fileName,
       String fileUrl, String fileType, String uploadedAt) async {
     try {
-      // Archive the file metadata to the 'archive' collection
       await FirebaseFirestore.instance.collection('archive').add({
         'name': fileName,
         'url': fileUrl,
-        'type': fileType,
+        'type': 'file', // Set type as 'file'
+        'fileType': fileType,
         'uploadedAt': uploadedAt,
-        'deletedAt':
-            DateFormat.yMMMd().format(DateTime.now()), // Add the deletion time
+        'deletedAt': DateFormat.yMMMd().format(DateTime.now()), // Deletion time
       });
 
-      // Delete the file from Firebase Storage
       Reference storageReference = FirebaseStorage.instance.refFromURL(fileUrl);
       await storageReference.delete();
 
-      // Delete the file metadata from Firestore (from 'files' collection)
       await FirebaseFirestore.instance.collection('files').doc(fileId).delete();
 
       _showSnackbar('File archived and deleted successfully!');
@@ -114,9 +122,31 @@ class _FileUploadPageState extends State<FileUploadPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 250,
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'Search Files',
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      setState(() {
+                        _searchQuery = _searchController.text;
+                      });
+                    },
+                  ),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              ),
             ),
+            const SizedBox(height: 16),
             isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ElevatedButton(
@@ -130,10 +160,8 @@ class _FileUploadPageState extends State<FileUploadPage> {
                     ),
                   ),
             const SizedBox(height: 16),
-            const SizedBox(height: 16),
             StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('files').snapshots(),
+              stream: _getFilteredFiles(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
@@ -148,7 +176,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: DataTable(
-                    headingRowColor: WidgetStateProperty.all(Colors.blueGrey),
+                    headingRowColor: MaterialStateProperty.all(Colors.blueGrey),
                     columns: const [
                       DataColumn(
                         label: Text(
@@ -176,7 +204,7 @@ class _FileUploadPageState extends State<FileUploadPage> {
                       ),
                     ],
                     rows: files.map((file) {
-                      String fileId = file.id; // The document ID in Firestore
+                      String fileId = file.id;
                       String fileName = file['name'];
                       String fileUrl = file['url'];
                       String fileType = file['type'] ?? 'Unknown File Type';

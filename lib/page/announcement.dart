@@ -17,6 +17,8 @@ class AnnouncementPage extends StatefulWidget {
 
 class _AnnouncementPageState extends State<AnnouncementPage> {
   final _titleController = TextEditingController();
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
   final _venueController = TextEditingController();
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
@@ -86,6 +88,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           'time': _timeController.text,
           'image': imageUrl ?? "",
           'others': _othersController.text,
+          'created': Timestamp.now(),
         });
         _showSnackbar('Announcement submitted successfully!');
         _clearForm();
@@ -178,6 +181,17 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   void initState() {
     super.initState();
     getuserData();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -186,17 +200,149 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Form(
-              key: _formKey,
+            const SizedBox(height: 32),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Announcement List',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                GlobalButton(
+                    oncallback: () {
+                      showCreateAnnouncement(context);
+                    },
+                    title: "Create New"),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Search TextField
+            SizedBox(
+              width: 280,
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Search Announcements',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('announcements')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+
+                // Filter announcements based on search query
+                final announcements = snapshot.data!.docs.where((doc) {
+                  final title = doc['title'].toString().toLowerCase();
+                  final venue = doc['venue'].toString().toLowerCase();
+                  return title.contains(_searchQuery) ||
+                      venue.contains(_searchQuery);
+                }).toList();
+
+                return announcements.isEmpty
+                    ? const Text("No announcements found.")
+                    : SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        child: DataTable(
+                          headingRowColor: WidgetStateProperty.all(maincolor),
+                          dataRowMaxHeight: 110,
+                          columns: const [
+                            DataColumn(
+                                label: Text('Title',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Venue',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Date',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Time',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Image',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Others',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Actions',
+                                    style: TextStyle(color: Colors.white))),
+                          ],
+                          rows: announcements.map((announcement) {
+                            return DataRow(cells: [
+                              DataCell(Text(announcement['title'])),
+                              DataCell(Text(announcement['venue'])),
+                              DataCell(Text(announcement['date'])),
+                              DataCell(Text(announcement['time'])),
+                              DataCell(
+                                announcement['image'] == null
+                                    ? const Text("No Image")
+                                    : Container(
+                                        height: 50,
+                                        width: 50,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                announcement['image']),
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                              DataCell(Text(announcement['others'])),
+                              DataCell(
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    _deleteAnnouncement(announcement.id);
+                                  },
+                                ),
+                              ),
+                            ]);
+                          }).toList(),
+                        ),
+                      );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showCreateAnnouncement(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          title: const Text(
+            'Add Announcement',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    'Add Announcement',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
                   TextFormField(
                     controller: _titleController,
                     decoration: const InputDecoration(
@@ -320,102 +466,22 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                           oncallback: () {
                             _submitAnnouncement();
                           },
-                          title: "Submit Announcement"),
-                  // ElevatedButton(
-                  //   onPressed: _submitAnnouncement,
-                  //   child: const Text('Submit Announcement'),
-                  //),
+                          title: "Submit Announcement",
+                        ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
-            const Text(
-              'Announcement List',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('announcements')
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                }
-
-                final announcements = snapshot.data!.docs;
-
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.90,
-                  child: DataTable(
-                    //border: TableBorder.all(width: 1, color: Colors.black),
-                    headingRowColor: WidgetStateProperty.all(maincolor),
-                    columns: const [
-                      DataColumn(
-                          label: Text('Title',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Venue',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Date',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Time',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Image',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Others',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Actions',
-                              style: TextStyle(color: Colors.white))),
-                    ],
-                    rows: announcements.map((announcement) {
-                      debugPrint("${announcement['image']}");
-                      return DataRow(cells: [
-                        DataCell(
-                            PrimaryFont(title: "${announcement['title']}")),
-                        DataCell(
-                            PrimaryFont(title: "${announcement['venue']}")),
-                        DataCell(PrimaryFont(title: "${announcement['date']}")),
-                        DataCell(PrimaryFont(title: "${announcement['time']}")),
-                        announcement['image'] == null
-                            ? const DataCell(Text("No Image"))
-                            : DataCell(Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(announcement['image']),
-                                  ),
-                                ),
-                              )),
-                        DataCell(Text(announcement['others'])),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              _deleteAnnouncement(announcement.id);
-                            },
-                          ),
-                        ),
-                      ]);
-                    }).toList(),
-                  ),
-                );
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
               },
+              child: const Text("Cancel"),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 

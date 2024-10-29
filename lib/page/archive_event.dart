@@ -18,12 +18,14 @@ class _ArchivePageState extends State<ArchivePage> {
     if (_searchQuery.isEmpty) {
       return FirebaseFirestore.instance.collection('archive').snapshots();
     } else {
+      // Use range query for case-insensitive search
+      String startQuery = _searchQuery.toLowerCase();
+      String endQuery = startQuery + '\uf8ff';
+
       return FirebaseFirestore.instance
           .collection('archive')
-          .where('name_lower',
-              isGreaterThanOrEqualTo: _searchQuery.toLowerCase())
-          .where('name_lower',
-              isLessThanOrEqualTo: '${_searchQuery.toLowerCase()}\uf8ff')
+          .where('name_lower', isGreaterThanOrEqualTo: startQuery)
+          .where('name_lower', isLessThanOrEqualTo: endQuery)
           .snapshots();
     }
   }
@@ -76,7 +78,7 @@ class _ArchivePageState extends State<ArchivePage> {
                 return SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: DataTable(
-                    headingRowColor: WidgetStateProperty.all(maincolor),
+                    headingRowColor: MaterialStateProperty.all(maincolor),
                     columns: const [
                       DataColumn(
                         label: PrimaryFont(
