@@ -14,7 +14,7 @@ class VisualAnalytics extends StatefulWidget {
 class _VisualAnalyticsState extends State<VisualAnalytics> {
   int totalMembers = 0;
   int totalNonMembers = 0;
-  final int requiredAttendees = 230; // Required number of attendees
+  final int requiredAttendees = 230;
 
   @override
   void initState() {
@@ -23,7 +23,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
     _fetchAttendeesData2();
   }
 
-  // Function to fetch attendee data from Firestore
   Future<void> _fetchAttendeesData() async {
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -33,7 +32,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
           .get();
 
       if (snapshot.docs.isEmpty) {
-        // Handle the case where there are no attendees
         setState(() {
           totalMembers = 0;
           totalNonMembers = 0;
@@ -45,9 +43,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       int nonMembers = 0;
 
       for (var doc in snapshot.docs) {
-        // Ensure 'userId' exists in each document
-        final userId = doc.data()['userId'] ??
-            'notmember'; // Default to 'notmember' if field is missing
+        final userId = doc.data()['userId'] ?? 'notmember';
         if (userId == 'notmember') {
           nonMembers++;
         } else {
@@ -64,8 +60,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
     }
   }
 
-  // Function to fetch attendee data from Firestore
-// Function to fetch attendee data from Firestore
   List<Map<String, dynamic>> attendeesData2 = [];
   Future<void> _fetchAttendeesData2() async {
     try {
@@ -85,19 +79,18 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       List<Map<String, dynamic>> fetchedData = [];
 
       for (var doc in snapshot.docs) {
-        // Collecting the document's data into a Map
         final data = doc.data();
         fetchedData.add({
-          'userName': data['userName'] ?? '',
-          'email': data['email'] ?? '',
-          'eventName': data['eventname'] ?? '',
-          'attendedAt': data['attendedAt'] ?? '',
-          'phone': data['phone'] ?? '',
+          'userName': data['userName'] ?? 'N/A',
+          'email': data['email'] ?? 'N/A',
+          'eventName': data['eventname'] ?? 'N/A',
+          'attendedAt': data['attendedAt'] ?? 'N/A',
+          'phone': data['phone'] ?? 'N/A',
         });
       }
 
       setState(() {
-        attendeesData2 = fetchedData; // Set the attendee data in the state
+        attendeesData2 = fetchedData;
       });
     } catch (e) {
       print('Error fetching attendees: $e');
@@ -106,10 +99,8 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
 
   @override
   Widget build(BuildContext context) {
-    // Calculate total attendees
     int totalAttendees = totalMembers + totalNonMembers;
 
-    // Prepare pie chart sections based on members and non-members
     final pieSectionsAttendees = [
       PieChartSectionData(
         value: totalMembers.toDouble(),
@@ -127,7 +118,9 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       ),
     ];
 
-    // Prepare pie chart sections based on total attendees vs required attendees
+    final remainingAttendees = (requiredAttendees - totalAttendees)
+        .clamp(0, requiredAttendees)
+        .toDouble();
     final pieSectionsRequired = [
       PieChartSectionData(
         value: totalAttendees.toDouble(),
@@ -137,9 +130,9 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
         titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       PieChartSectionData(
-        value: (requiredAttendees - totalAttendees).toDouble(),
+        value: remainingAttendees,
         color: Colors.orange,
-        title: 'Remaining: ${requiredAttendees - totalAttendees}',
+        title: 'Remaining: ${remainingAttendees.toInt()}',
         radius: 60,
         titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
@@ -158,11 +151,9 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
-            // Row to display both pie charts side by side
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Pie chart for members and non-members
                 Expanded(
                   child: Column(
                     children: [
@@ -174,10 +165,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                             sections: pieSectionsAttendees,
                             centerSpaceRadius: 80,
                             sectionsSpace: 2,
-                            pieTouchData: PieTouchData(
-                              touchCallback:
-                                  (FlTouchEvent event, pieTouchResponse) {},
-                            ),
                           ),
                         ),
                       ),
@@ -187,7 +174,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                     ],
                   ),
                 ),
-                // Pie chart for total attendees vs required attendees
                 Expanded(
                   child: Column(
                     children: [
@@ -199,10 +185,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                             sections: pieSectionsRequired,
                             centerSpaceRadius: 80,
                             sectionsSpace: 2,
-                            pieTouchData: PieTouchData(
-                              touchCallback:
-                                  (FlTouchEvent event, pieTouchResponse) {},
-                            ),
                           ),
                         ),
                       ),
@@ -214,31 +196,32 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 50,
-            ),
+            const SizedBox(height: 50),
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: DataTable(
-                  headingRowColor: const WidgetStatePropertyAll(maincolor),
-                  headingTextStyle: const TextStyle(color: Colors.white),
-                  columns: const [
-                    DataColumn(label: Text('User Name')),
-                    DataColumn(label: Text('Email')),
-                    DataColumn(label: Text('Event Name')),
-                    DataColumn(label: Text('Phone')),
-                  ],
-                  rows: attendeesData2.map((attendee) {
-                    return DataRow(cells: [
-                      DataCell(Text(attendee['userName'])),
-                      DataCell(Text(attendee['email'])),
-                      DataCell(Text(attendee['eventName'])),
-                      DataCell(Text(attendee['phone'])),
-                    ]);
-                  }).toList(),
-                ),
-              ),
+              child: attendeesData2.isEmpty
+                  ? const Center(child: Text('No attendees data available'))
+                  : SingleChildScrollView(
+                      child: DataTable(
+                        headingRowColor:
+                            const MaterialStatePropertyAll(maincolor),
+                        headingTextStyle: const TextStyle(color: Colors.white),
+                        columns: const [
+                          DataColumn(label: Text('User Name')),
+                          DataColumn(label: Text('Email')),
+                          DataColumn(label: Text('Event Name')),
+                          DataColumn(label: Text('Phone')),
+                        ],
+                        rows: attendeesData2.map((attendee) {
+                          return DataRow(cells: [
+                            DataCell(Text(attendee['userName'])),
+                            DataCell(Text(attendee['email'])),
+                            DataCell(Text(attendee['eventName'])),
+                            DataCell(Text(attendee['phone'])),
+                          ]);
+                        }).toList(),
+                      ),
+                    ),
             )
           ],
         ),
@@ -247,7 +230,6 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
   }
 }
 
-// LegendItem widget for displaying legends
 class LegendItem extends StatelessWidget {
   final Color color;
   final String text;

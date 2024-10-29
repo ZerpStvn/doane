@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/controller/ministrylist.dart';
+import 'package:doane/front/indexmain.dart';
 import 'package:doane/page/announcement.dart';
 import 'package:doane/page/archive_event.dart';
 import 'package:doane/page/attendance.dart';
@@ -524,10 +525,12 @@ class _HomePageState extends State<HomePage> {
     await FirebaseAuth.instance.signOut();
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('uid');
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => LoginCont()),
-      (route) => false,
-    );
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const Mainpage()),
+        (route) => false,
+      );
+    }
   }
 }

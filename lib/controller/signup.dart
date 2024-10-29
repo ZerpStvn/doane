@@ -31,7 +31,7 @@ class _UserRegistrationState extends State<UserRegistration> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _newMinistryController = TextEditingController();
-  int isnext = 2;
+  int isnext = 0;
   // String _role = 'Member';
   bool _isBaptised = false;
   String _gender = 'Male';

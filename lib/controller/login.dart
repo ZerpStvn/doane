@@ -185,7 +185,7 @@ class _LoginContState extends State<LoginCont> {
         if (userDoc.exists) {
           int verifStatus = userDoc['verif'] ?? 0;
 
-          if (verifStatus == 3) {
+          if (verifStatus == 3 && mounted) {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
@@ -217,14 +217,5 @@ class _LoginContState extends State<LoginCont> {
     }
   }
 
-  Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('uid');
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => LoginCont()),
-      (route) => false,
-    );
-  }
+
 }
