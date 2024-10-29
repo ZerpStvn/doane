@@ -5,6 +5,7 @@ import 'package:doane/page/homepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCont extends StatefulWidget {
   const LoginCont({super.key});
@@ -31,7 +32,6 @@ class _LoginContState extends State<LoginCont> {
   void initState() {
     super.initState();
     _email.text = "doane@doanechurch.com";
-    // _email.text = "sample@gmail.com";
     _pass.text = "123456";
   }
 
@@ -140,7 +140,7 @@ class _LoginContState extends State<LoginCont> {
                         height: 55,
                         child: ButtonCallback(
                           function: handlesubmit,
-                          title: "Login",
+                          title: "Submit",
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -167,38 +167,36 @@ class _LoginContState extends State<LoginCont> {
     });
     try {
       if (_formkey.currentState!.validate()) {
-        // Authenticate the user using Firebase Auth
         UserCredential userCredential =
             await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _email.text,
           password: _pass.text,
         );
 
-        // Fetch the user data from Firestore
+        // Store the user’s UID to persist login state
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('uid', userCredential.user!.uid);
+
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
             .get();
 
         if (userDoc.exists) {
-          // Check if the 'verif' field is present
           int verifStatus = userDoc['verif'] ?? 0;
 
           if (verifStatus == 3) {
-            // Redirect to the homepage if verif = 3
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()),
               (route) => false,
             );
           } else if (verifStatus == 2) {
-            // Show error message if verif = 2
             setState(() {
               errormessage = "Not yet Verified";
               isloading = false;
             });
           } else {
-            // Handle other verif statuses if needed
             setState(() {
               errormessage = "Verification status unknown";
               isloading = false;
@@ -213,10 +211,20 @@ class _LoginContState extends State<LoginCont> {
       }
     } catch (e) {
       setState(() {
-        debugPrint("$e");
         errormessage = "Password and Email did not match";
         isloading = false;
       });
     }
+  }
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('uid');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginCont()),
+      (route) => false,
+    );
   }
 }

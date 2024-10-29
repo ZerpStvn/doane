@@ -17,6 +17,7 @@ import 'package:doane/page/userslist.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -485,7 +486,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         ListTile(
                           onTap: () {
-                            handlelogout();
+                            logout();
                           },
                           leading: const Icon(
                             Icons.logout_rounded,
@@ -516,6 +517,17 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+    );
+  }
+
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('uid');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginCont()),
+      (route) => false,
     );
   }
 }
