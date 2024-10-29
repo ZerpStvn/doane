@@ -76,6 +76,26 @@ class _AttendEventPageState extends State<AttendEventPage> {
     }
   }
 
+  Future<void> _cancelattendEvent(String eventId, String eventname) async {
+    if (userId != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('newAttendance')
+            .doc(eventId)
+            .collection('attendee')
+            .doc(userId)
+            .delete();
+
+        _showSnackbar('Event Cancelled');
+        setState(() {});
+      } catch (e) {
+        _showSnackbar('Error attending event: $e');
+      }
+    } else {
+      _showSnackbar('You must be logged in to attend an event.');
+    }
+  }
+
   void _showSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
@@ -181,19 +201,21 @@ class _AttendEventPageState extends State<AttendEventPage> {
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: hasAttended
-                                      ? const Color.fromARGB(97, 108, 175,
-                                          110) // Grey out if attended
+                                      ? Colors.red // Grey out if attended
                                       : maincolor,
                                   shape: const RoundedRectangleBorder(),
                                 ),
                                 onPressed: hasAttended
-                                    ? null
+                                    ? () {
+                                        _cancelattendEvent(
+                                            event.id, event['title']);
+                                      }
                                     : () {
                                         _attendEvent(event.id, event['title']);
                                       },
                                 child: Text(
-                                  hasAttended ? 'Registered' : 'Attend Event',
-                                  style: const TextStyle(color: Colors.white),
+                                  hasAttended ? 'Can\'t go' : 'Attend Event',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),

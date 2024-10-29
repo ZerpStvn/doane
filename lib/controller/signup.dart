@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/login.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
 import 'package:doane/model/users.dart';
 import 'package:doane/utils/const.dart';
@@ -30,7 +31,7 @@ class _UserRegistrationState extends State<UserRegistration> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _newMinistryController = TextEditingController();
-
+  int isnext = 2;
   // String _role = 'Member';
   bool _isBaptised = false;
   String _gender = 'Male';
@@ -107,6 +108,10 @@ class _UserRegistrationState extends State<UserRegistration> {
           'verif': 2
         });
         _showSnackbar('Form submitted successfully!');
+        if (mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const LoginCont()));
+        }
       } catch (e) {
         _showSnackbar('Error submitting form: $e');
       }
@@ -193,359 +198,558 @@ class _UserRegistrationState extends State<UserRegistration> {
     return age;
   }
 
+  Widget changenextcontent() {
+    if (isnext == 0) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'PERSONAL INFORMATION',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Email'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _addressController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Address'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your address';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _ageController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), labelText: 'Age'),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your age';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _birthController,
+                      readOnly: true,
+                      onTap: () => _selectDate(context),
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Date of Birth'),
+                      keyboardType: TextInputType.datetime,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your date of birth';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _phoneController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Phone Number'),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your phone number';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _gender,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Gender'),
+                items: ['Male', 'Female', 'Other']
+                    .map((gender) => DropdownMenuItem<String>(
+                          value: gender,
+                          child: Text(gender),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _gender = value!;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _maritalStatus,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Marital Status'),
+                items: ['Single', 'Married', 'Divorced', 'Widowed']
+                    .map((status) => DropdownMenuItem<String>(
+                          value: status,
+                          child: Text(status),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _maritalStatus = value!;
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _newMinistryController,
+                decoration: const InputDecoration(
+                    labelText: 'Add a Ministry', border: OutlineInputBorder()),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _addMinistry,
+                child: const Text('Add Ministry'),
+              ),
+              if (_selectedMinistries.isNotEmpty)
+                Wrap(
+                  spacing: 8.0,
+                  children: _selectedMinistries
+                      .map((ministry) => Chip(
+                            label: Text(ministry),
+                            onDeleted: () {
+                              setState(() {
+                                _selectedMinistries.remove(ministry);
+                              });
+                            },
+                          ))
+                      .toList(),
+                ),
+              const SizedBox(height: 26),
+            ],
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: maincolor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "< Go Back",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _nameController.text.isEmpty ||
+                            _addressController.text.isEmpty ||
+                            _ageController.text.isEmpty ||
+                            _birthController.text.isEmpty ||
+                            _phoneController.text.isEmpty
+                        ? Colors.grey
+                        : maincolor,
+                  ),
+                  onPressed: _nameController.text.isEmpty ||
+                          _addressController.text.isEmpty ||
+                          _ageController.text.isEmpty ||
+                          _birthController.text.isEmpty ||
+                          _phoneController.text.isEmpty
+                      ? null
+                      : () {
+                          setState(() {
+                            isnext = 1;
+                          });
+                        },
+                  child: const Text(
+                    "Next >",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      );
+    } else if (isnext == 1) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _emergencyContactNameController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Emergency Contact Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter emergency contact name';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _emergencyContactPhoneController,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Emergency Contact Phone'),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter emergency contact phone number';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _bioController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Brief Bio'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _additionalNotesController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Additional Notes'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 20),
+              SwitchListTile(
+                title: const Text('Baptised'),
+                value: _isBaptised,
+                onChanged: (value) {
+                  setState(() {
+                    _isBaptised = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 26),
+            ],
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: maincolor,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isnext = 0;
+                    });
+                  },
+                  child: const Text(
+                    "< Go Back",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        _emergencyContactNameController.text.isEmpty ||
+                                _emergencyContactPhoneController.text.isEmpty ||
+                                _bioController.text.isEmpty ||
+                                _additionalNotesController.text.isEmpty
+                            ? Colors.grey
+                            : maincolor,
+                  ),
+                  onPressed: _emergencyContactNameController.text.isEmpty ||
+                          _emergencyContactPhoneController.text.isEmpty ||
+                          _bioController.text.isEmpty ||
+                          _additionalNotesController.text.isEmpty
+                      ? null
+                      : () {
+                          setState(() {
+                            isnext = 2;
+                          });
+                        },
+                  child: const Text(
+                    "Next >",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      );
+    } else if (isnext == 2) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Religion Information',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _denominationController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Denomination'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your denomination';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _congregationController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Current Congregation'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your current congregation';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Login Information',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Email Address'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Email Address';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), labelText: 'Password'),
+                obscureText: true,
+                onChanged: (value) {
+                  if (value.isNotEmpty) {
+                    setState(() {});
+                  } else {
+                    value.isEmpty;
+                    setState(() {});
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          child: ButtonCallback(
+                              function: () {
+                                setState(() {
+                                  isnext = 1;
+                                });
+                              },
+                              bgcolor: maincolor,
+                              fcolor: Colors.white,
+                              title: "< Go Back"),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: ButtonCallback(
+                              function: () {
+                                if (_usernameController.text.isEmpty ||
+                                    _passwordController.text.isEmpty) {
+                                  handleCreateAccount();
+                                } else {
+                                  null;
+                                }
+                              },
+                              bgcolor: _usernameController.text.isEmpty ||
+                                      _passwordController.text.isEmpty
+                                  ? Colors.grey
+                                  : maincolor,
+                              fcolor: Colors.white,
+                              title: "SUBMIT INFORMATION"),
+                        ),
+                      ],
+                    )
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pre Register"),
-      ),
       body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'PERSONAL INFORMATION',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Row(
+              child: Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Name'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your name';
-                            }
-                            return null;
-                          },
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                              child: IconButton(
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   isnext = 0;
+                                    // });
+                                  },
+                                  icon: Icon(
+                                    Icons.person_outline,
+                                    color: isnext == 0
+                                        ? Colors.blueAccent
+                                        : Colors.black,
+                                  ))),
+                          Expanded(
+                            child: Container(
+                              color:
+                                  isnext == 1 ? Colors.blueAccent : Colors.grey,
+                              height: 2,
+                              width: MediaQuery.of(context).size.width * 0.40,
+                            ),
+                          ),
+                          Expanded(
+                              child: IconButton(
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   isnext = 1;
+                                    // });
+                                  },
+                                  icon: Icon(
+                                    Icons.church_outlined,
+                                    color: isnext == 1
+                                        ? Colors.blueAccent
+                                        : Colors.black,
+                                  ))),
+                          Expanded(
+                            child: Container(
+                              color:
+                                  isnext == 2 ? Colors.blueAccent : Colors.grey,
+                              height: 2,
+                              width: MediaQuery.of(context).size.width * 0.40,
+                            ),
+                          ),
+                          Expanded(
+                              child: IconButton(
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   isnext = 2;
+                                    // });
+                                  },
+                                  icon: Icon(
+                                    Icons.login_outlined,
+                                    color: isnext == 2
+                                        ? Colors.blueAccent
+                                        : Colors.black,
+                                  )))
+                        ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Email'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
-                        ),
+                      const SizedBox(
+                        height: 50,
                       ),
+                      changenextcontent()
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _addressController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Address'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your address';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _ageController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Age'),
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your age';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _birthController,
-                          readOnly: true,
-                          onTap: () => _selectDate(context),
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Date of Birth'),
-                          keyboardType: TextInputType.datetime,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your date of birth';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _phoneController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Phone Number'),
-                          keyboardType: TextInputType.phone,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your phone number';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _gender,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Gender'),
-                    items: ['Male', 'Female', 'Other']
-                        .map((gender) => DropdownMenuItem<String>(
-                              value: gender,
-                              child: Text(gender),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _gender = value!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _maritalStatus,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Marital Status'),
-                    items: ['Single', 'Married', 'Divorced', 'Widowed']
-                        .map((status) => DropdownMenuItem<String>(
-                              value: status,
-                              child: Text(status),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _maritalStatus = value!;
-                      });
-                    },
-                  ),
-                  // const SizedBox(height: 16),
-                  // DropdownButtonFormField<String>(
-                  //   value: _membershipStatus,
-                  //   decoration: const InputDecoration(
-                  //       border: OutlineInputBorder(),
-                  //       labelText: 'Membership Status'),
-                  //   items: ['Active', 'Inactive', 'Visitor']
-                  //       .map((status) => DropdownMenuItem<String>(
-                  //             value: status,
-                  //             child: Text(status),
-                  //           ))
-                  //       .toList(),
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _membershipStatus = value!;
-                  //     });
-                  //   },
-                  // ),
-                  // const SizedBox(height: 16),
-                  // DropdownButtonFormField<String>(
-                  //   value: _role,
-                  //   decoration: const InputDecoration(
-                  //       border: OutlineInputBorder(), labelText: 'Role'),
-                  //   items: ['Member', 'Staff', 'Volunteer']
-                  //       .map((role) => DropdownMenuItem<String>(
-                  //             value: role,
-                  //             child: Text(role),
-                  //           ))
-                  //       .toList(),
-                  //   onChanged: (value) {
-                  //     setState(() {
-                  //       _role = value!;
-                  //     });
-                  //   },
-                  // ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _newMinistryController,
-                    decoration: const InputDecoration(
-                        labelText: 'Add a Ministry',
-                        border: OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _addMinistry,
-                    child: const Text('Add Ministry'),
-                  ),
-                  if (_selectedMinistries.isNotEmpty)
-                    Wrap(
-                      spacing: 8.0,
-                      children: _selectedMinistries
-                          .map((ministry) => Chip(
-                                label: Text(ministry),
-                                onDeleted: () {
-                                  setState(() {
-                                    _selectedMinistries.remove(ministry);
-                                  });
-                                },
-                              ))
-                          .toList(),
-                    ),
-                  const SizedBox(height: 16),
-                  SwitchListTile(
-                    title: const Text('Baptised'),
-                    value: _isBaptised,
-                    onChanged: (value) {
-                      setState(() {
-                        _isBaptised = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _emergencyContactNameController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Emergency Contact Name'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter emergency contact name';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          controller: _emergencyContactPhoneController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Emergency Contact Phone'),
-                          keyboardType: TextInputType.phone,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter emergency contact phone number';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _bioController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Brief Bio'),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _additionalNotesController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Additional Notes'),
-                    maxLines: 3,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Religion Information',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _denominationController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Denomination'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your denomination';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _congregationController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Current Congregation'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your current congregation';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Login Information',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Email Address'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a Email Address';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Password'),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : SizedBox(
-                          height: 40,
-                          child: ButtonCallback(
-                              function: () {
-                                handleCreateAccount();
-                              },
-                              bgcolor: maincolor,
-                              fcolor: Colors.white,
-                              title: "SUBMIT INFORMATION"),
-                        )
-                ],
+                ),
               ),
             ),
           )),
