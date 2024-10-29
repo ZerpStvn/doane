@@ -784,6 +784,184 @@ class _MainpageState extends State<Mainpage> {
       ),
     );
   }
+
+  void showFirstAnnouncement(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width * 0.60,
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('announcements')
+                .where('created',
+                    isGreaterThanOrEqualTo:
+                        DateTime.now().subtract(const Duration(days: 7)))
+                .limit(3)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.data!.docs.isEmpty) {
+                return const AlertDialog(
+                  content: Text('No new announcements this week.'),
+                );
+              }
+              return AlertDialog(
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Close"))
+                ],
+                title: const Text('Latest Announcements'),
+                content: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  child: ListView(
+                    children: snapshot.data!.docs.map((doc) {
+                      var dataID = doc.id;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreRegistrationPage(
+                                      docsID: dataID, page: 0)));
+                        },
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 230,
+                              width: 230,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          checkimage(doc['image'])))),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  doc['title'],
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Text('${doc['date']} at ${doc['time']}'),
+                                Text(doc['venue']),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void showSecondEvent(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width * 0.60,
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('events')
+                .where('created',
+                    isGreaterThanOrEqualTo:
+                        DateTime.now().subtract(const Duration(days: 7)))
+                .limit(3)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.data!.docs.isEmpty) {
+                return const AlertDialog(
+                  content: Text('No new Event this week.'),
+                );
+              }
+              return AlertDialog(
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Close"))
+                ],
+                title: const Text('Latest Events'),
+                content: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  child: ListView(
+                    children: snapshot.data!.docs.map((doc) {
+                      var dataID = doc.id;
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreRegistrationPage(
+                                      docsID: dataID, page: 1)));
+                        },
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 230,
+                              width: 230,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(
+                                          checkimage(doc['image'])))),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  doc['title'],
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                Text('${doc['date']} at ${doc['time']}'),
+                                Text(doc['venue']),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showFirstAnnouncement(context);
+      showSecondEvent(context);
+    });
+  }
 }
 //  <script type="module">
     //   // Import the functions you need from the SDKs you need

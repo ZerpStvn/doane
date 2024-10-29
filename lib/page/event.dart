@@ -27,6 +27,8 @@ class _EventsPageState extends State<EventsPage> {
   Uint8List? _imageData;
   String? _imageName;
   final _formKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+  String _searchQuery = '';
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -86,6 +88,7 @@ class _EventsPageState extends State<EventsPage> {
           'time': _timeController.text,
           'image': imageUrl ?? "",
           'others': _othersController.text,
+          'created': Timestamp.now(),
         });
         _showSnackbar('events submitted successfully!');
         _clearForm();
@@ -178,6 +181,17 @@ class _EventsPageState extends State<EventsPage> {
   void initState() {
     super.initState();
     getuserData();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -186,152 +200,37 @@ class _EventsPageState extends State<EventsPage> {
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Add Events',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the events title';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _venueController,
-                    decoration: const InputDecoration(
-                      labelText: 'Venue',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the venue';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _dateController,
-                    decoration: InputDecoration(
-                      labelText: 'Date',
-                      border: const OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_today),
-                        onPressed: () {
-                          _selectDate(context);
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the date';
-                      }
-                      return null;
-                    },
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _timeController,
-                    decoration: InputDecoration(
-                      labelText: 'Time',
-                      border: const OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.access_time),
-                        onPressed: () {
-                          _selectTime(context);
-                        },
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the time';
-                      }
-                      return null;
-                    },
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: _imageName ?? '',
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Image',
-                            border: OutlineInputBorder(),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          readOnly: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select an image';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.image),
-                        onPressed: _pickImage,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _othersController,
-                    decoration: const InputDecoration(
-                      labelText: 'Others',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : GlobalButton(
-                          oncallback: () {
-                            _submitAnnouncement();
-                          },
-                          title: "Submit Events"),
-                  // ElevatedButton(
-                  //   onPressed: _submitAnnouncement,
-                  //   child: const Text('Submit Events'),
-                  // ),
-                ],
-              ),
-            ),
             const SizedBox(height: 32),
-            const Text(
-              'Events List',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Event List',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                GlobalButton(
+                    oncallback: () {
+                      showCreateEvent(context);
+                    },
+                    title: "Create New"),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Search TextField
+            SizedBox(
+              width: 280,
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  labelText: 'Search Event',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
             ),
             const SizedBox(height: 16),
             StreamBuilder<QuerySnapshot>(
@@ -346,75 +245,247 @@ class _EventsPageState extends State<EventsPage> {
                   return const CircularProgressIndicator();
                 }
 
-                final announcements = snapshot.data!.docs;
+                final announcements = snapshot.data!.docs.where((doc) {
+                  final title = doc['title'].toString().toLowerCase();
+                  final venue = doc['venue'].toString().toLowerCase();
+                  return title.contains(_searchQuery) ||
+                      venue.contains(_searchQuery);
+                }).toList();
 
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.90,
-                  child: DataTable(
-                    //border: TableBorder.all(width: 1, color: Colors.black),
-                    headingRowColor: WidgetStateProperty.all(maincolor),
-                    columns: const [
-                      DataColumn(
-                          label: Text('Title',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Venue',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Date',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Time',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Image',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Others',
-                              style: TextStyle(color: Colors.white))),
-                      DataColumn(
-                          label: Text('Actions',
-                              style: TextStyle(color: Colors.white))),
-                    ],
-                    rows: announcements.map((announcement) {
-                      debugPrint("${announcement['image']}");
-                      return DataRow(cells: [
-                        DataCell(
-                            PrimaryFont(title: "${announcement['title']}")),
-                        DataCell(
-                            PrimaryFont(title: "${announcement['venue']}")),
-                        DataCell(PrimaryFont(title: "${announcement['date']}")),
-                        DataCell(PrimaryFont(title: "${announcement['time']}")),
-                        announcement['image'] == null
-                            ? const DataCell(Text("No Image"))
-                            : DataCell(Container(
-                                height: 50,
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(announcement['image']),
-                                  ),
+                return announcements.isEmpty
+                    ? const Text("No announcements found.")
+                    : SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        child: DataTable(
+                          headingRowColor: WidgetStateProperty.all(maincolor),
+                          dataRowMaxHeight: 110,
+                          columns: const [
+                            DataColumn(
+                                label: Text('Title',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Venue',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Date',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Time',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Image',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Others',
+                                    style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Actions',
+                                    style: TextStyle(color: Colors.white))),
+                          ],
+                          rows: announcements.map((announcement) {
+                            return DataRow(cells: [
+                              DataCell(Text(announcement['title'])),
+                              DataCell(Text(announcement['venue'])),
+                              DataCell(Text(announcement['date'])),
+                              DataCell(Text(announcement['time'])),
+                              DataCell(
+                                announcement['image'] == null
+                                    ? const Text("No Image")
+                                    : Container(
+                                        height: 50,
+                                        width: 50,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                announcement['image']),
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                              DataCell(Text(announcement['others'])),
+                              DataCell(
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    _deleteAnnouncement(announcement.id);
+                                  },
                                 ),
-                              )),
-                        DataCell(Text(announcement['others'])),
-                        DataCell(
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              _deleteAnnouncement(announcement.id);
-                            },
-                          ),
+                              ),
+                            ]);
+                          }).toList(),
                         ),
-                      ]);
-                    }).toList(),
-                  ),
-                );
+                      );
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void showCreateEvent(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(16.0),
+          title: const Text(
+            'Add Event',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Add Events',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Title',
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the events title';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _venueController,
+                  decoration: const InputDecoration(
+                    labelText: 'Venue',
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the venue';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _dateController,
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.calendar_today),
+                      onPressed: () {
+                        _selectDate(context);
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the date';
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _timeController,
+                  decoration: InputDecoration(
+                    labelText: 'Time',
+                    border: const OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.access_time),
+                      onPressed: () {
+                        _selectTime(context);
+                      },
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the time';
+                    }
+                    return null;
+                  },
+                  readOnly: true,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: TextEditingController(
+                          text: _imageName ?? '',
+                        ),
+                        decoration: const InputDecoration(
+                          labelText: 'Image',
+                          border: OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.white,
+                        ),
+                        readOnly: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select an image';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.image),
+                      onPressed: _pickImage,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _othersController,
+                  decoration: const InputDecoration(
+                    labelText: 'Others',
+                    border: OutlineInputBorder(),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : GlobalButton(
+                        oncallback: () {
+                          _submitAnnouncement();
+                        },
+                        title: "Submit Events"),
+                // ElevatedButton(
+                //   onPressed: _submitAnnouncement,
+                //   child: const Text('Submit Events'),
+                // ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Cancel"),
+            ),
+          ],
+        );
+      },
     );
   }
 
