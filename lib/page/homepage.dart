@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     } else if (currentpage == 4) {
       return const Attendance();
     } else if (currentpage == 5) {
-      return const PledgesPage();
+      return const AdminPledge();
     } else if (currentpage == 6) {
       return const ArchivePage();
     } else if (currentpage == 7) {
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     } else if (currentpage == 3) {
       return UserProfile(isedit: true, userid: currentuser!.uid);
     } else if (currentpage == 5) {
-      return const PledgesPage();
+      return const AdminPledge();
     } else if (currentpage == 4) {
       return const ListUserPledges();
     } else {
@@ -140,384 +140,422 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double widthsize = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          userrole == 'admin' || userrole == "staff"
-              ? Expanded(
-                  flex: 1,
-                  child: Drawer(
-                    backgroundColor: const Color.fromARGB(255, 71, 139, 171),
-                    shape: const RoundedRectangleBorder(),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 15.0),
-                            child: PrimaryFont(
-                              title: "DOANE MIS",
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              size: 34,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 0;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.person,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Users",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 1;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.note_outlined,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Ministry",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 2;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.notification_add,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Announcement",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 3;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.event,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Events",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 4;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.leaderboard,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Attendance",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          // ListTile(
-                          //   onTap: () {
-                          //     setState(() {
-                          //       currentpage = 5;
-                          //     });
-                          //   },
-                          //   leading: const Icon(
-                          //     Icons.church_outlined,
-                          //     color: Colors.white,
-                          //   ),
-                          //   title: const PrimaryFont(
-                          //     title: "Pledges",
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
-                          // const SizedBox(
-                          //   height: 13,
-                          // ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 6;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.archive_outlined,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Archive",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 7;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.edit_document,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Document",
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 13,
-                          ),
-                          // ListTile(
-                          //   onTap: () {
-                          //     setState(() {
-                          //       currentpage = 8;
-                          //     });
-                          //   },
-                          //   leading: const Icon(
-                          //     Icons.credit_card,
-                          //     color: Colors.white,
-                          //   ),
-                          //   title: const PrimaryFont(
-                          //     title: "Finance",
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
+      body: widthsize > 768
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                userrole == 'admin' || userrole == "staff"
+                    ? Expanded(
+                        flex: 1,
+                        child: Drawer(
+                          backgroundColor: maincolor,
+                          shape: const RoundedRectangleBorder(),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 150,
+                                  child: DrawerHeader(
+                                      decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(
+                                                  "https://cdn-hpmbn.nitrocdn.com/lLGZmTrNuTAGoUUpnHcgwEDrCoxqFTkT/assets/images/optimized/rev-821e4d1/louisianabaptists.org/wp/wp-content/uploads/2020/08/featured-bis-annualchurchprofile.jpg"))),
+                                      child: Container()),
+                                ),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 15.0),
+                                  child: PrimaryFont(
+                                    title: "DOANE MIS",
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    size: 34,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 0;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Users",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 1;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.note_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Ministry",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 2;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.notification_add,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Announcement",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 3;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.event,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Events",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 4;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.leaderboard,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Attendance",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 5;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.church_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Pledges",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 13,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 6;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.archive_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Archive",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 13,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 7;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.edit_document,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Document",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 13,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 8;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.credit_card,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Finance",
+                                    color: Colors.white,
+                                  ),
+                                ),
 
-                          ListTile(
-                            onTap: () {
-                              setState(() {
-                                currentpage = 9;
-                              });
-                            },
-                            leading: const Icon(
-                              Icons.email,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Message",
-                              color: Colors.white,
-                            ),
-                          ),
+                                ListTile(
+                                  onTap: () {
+                                    setState(() {
+                                      currentpage = 9;
+                                    });
+                                  },
+                                  leading: const Icon(
+                                    Icons.email,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Message",
+                                    color: Colors.white,
+                                  ),
+                                ),
 
-                          // ListTile(
-                          //   onTap: () {},
-                          //   leading: const Icon(
-                          //     Icons.church_outlined,
-                          //     color: Colors.white,
-                          //   ),
-                          //   title: const PrimaryFont(
-                          //     title: "Sermons list",
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
-                          const SizedBox(
-                            height: 140,
-                          ),
-                          ListTile(
-                            onTap: () {
-                              handlelogout();
-                            },
-                            leading: const Icon(
-                              Icons.logout_rounded,
-                              color: Colors.white,
+                                // ListTile(
+                                //   onTap: () {},
+                                //   leading: const Icon(
+                                //     Icons.church_outlined,
+                                //     color: Colors.white,
+                                //   ),
+                                //   title: const PrimaryFont(
+                                //     title: "Sermons list",
+                                //     color: Colors.white,
+                                //   ),
+                                // ),
+                                const SizedBox(
+                                  height: 140,
+                                ),
+                                ListTile(
+                                  onTap: () {
+                                    handlelogout();
+                                  },
+                                  leading: const Icon(
+                                    Icons.logout_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  title: const PrimaryFont(
+                                    title: "Logout",
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
-                            title: const PrimaryFont(
-                              title: "Logout",
-                              color: Colors.white,
-                            ),
                           ),
-                        ],
+                        ),
+                      )
+                    : Expanded(
+                        flex: 1,
+                        child: Drawer(
+                          backgroundColor: maincolor,
+                          shape: const RoundedRectangleBorder(),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: 150,
+                                child: DrawerHeader(
+                                    decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                "https://cdn-hpmbn.nitrocdn.com/lLGZmTrNuTAGoUUpnHcgwEDrCoxqFTkT/assets/images/optimized/rev-821e4d1/louisianabaptists.org/wp/wp-content/uploads/2020/08/featured-bis-annualchurchprofile.jpg"))),
+                                    child: Container()),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15.0),
+                                child: PrimaryFont(
+                                  title: "DOANE MIS",
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  size: 26,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    currentpage = 0;
+                                  });
+                                },
+                                leading: const Icon(
+                                  Icons.event,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "Attend Events",
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    currentpage = 1;
+                                  });
+                                },
+                                leading: const Icon(
+                                  Icons.note_outlined,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "Ministry",
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    currentpage = 2;
+                                  });
+                                },
+                                leading: const Icon(
+                                  Icons.church_outlined,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "Pledges",
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    currentpage = 4;
+                                  });
+                                },
+                                leading: const Icon(
+                                  Icons.list_alt_outlined,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "List Of Pledges",
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  setState(() {
+                                    currentpage = 3;
+                                  });
+                                },
+                                leading: const Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "Profile",
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              const SizedBox(
+                                height: 13,
+                              ),
+                              ListTile(
+                                onTap: () {
+                                  logout();
+                                },
+                                leading: const Icon(
+                                  Icons.logout_rounded,
+                                  color: Colors.white,
+                                ),
+                                title: const PrimaryFont(
+                                  title: "Logout",
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )
-              : Expanded(
-                  flex: 1,
-                  child: Drawer(
-                    backgroundColor: const Color.fromARGB(255, 71, 139, 171),
-                    shape: const RoundedRectangleBorder(),
+                Expanded(
+                  flex: 6,
+                  child: SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15.0),
-                          child: PrimaryFont(
-                            title: "DOANE MIS",
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            size: 26,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {
-                              currentpage = 0;
-                            });
-                          },
-                          leading: const Icon(
-                            Icons.event,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "Attend Events",
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {
-                              currentpage = 1;
-                            });
-                          },
-                          leading: const Icon(
-                            Icons.note_outlined,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "Ministry",
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {
-                              currentpage = 2;
-                            });
-                          },
-                          leading: const Icon(
-                            Icons.church_outlined,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "Pledges",
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {
-                              currentpage = 4;
-                            });
-                          },
-                          leading: const Icon(
-                            Icons.list_alt_outlined,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "List Of Pledges",
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            setState(() {
-                              currentpage = 3;
-                            });
-                          },
-                          leading: const Icon(
-                            Icons.person,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "Profile",
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        const SizedBox(
-                          height: 13,
-                        ),
-                        ListTile(
-                          onTap: () {
-                            logout();
-                          },
-                          leading: const Icon(
-                            Icons.logout_rounded,
-                            color: Colors.white,
-                          ),
-                          title: const PrimaryFont(
-                            title: "Logout",
-                            color: Colors.white,
-                          ),
-                        ),
+                        userrole == 'admin' || userrole == "staff"
+                            ? currentpages()
+                            : currentpagesuser()
                       ],
                     ),
                   ),
-                ),
-          Expanded(
-            flex: 6,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                )
+              ],
+            )
+          : const Scaffold(
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  userrole == 'admin' || userrole == "staff"
-                      ? currentpages()
-                      : currentpagesuser()
+                  Center(
+                    child: Text(
+                        textAlign: TextAlign.center,
+                        "Only Available In Desktop View\nFor Awesome Experience"),
+                  )
                 ],
               ),
             ),
-          )
-        ],
-      ),
     );
   }
 

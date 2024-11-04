@@ -112,10 +112,6 @@ class _UserFormState extends State<UserForm> {
           'verif': 3
         });
         _showSnackbar('Form submitted successfully!');
-        if (mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const LoginCont()));
-        }
       } catch (e) {
         _showSnackbar('Error submitting form: $e');
       }
@@ -647,12 +643,7 @@ class _UserFormState extends State<UserForm> {
                           height: 40,
                           child: ButtonCallback(
                               function: () {
-                                if (_usernameController.text.isEmpty ||
-                                    _passwordController.text.isEmpty) {
-                                  handleCreateAccount();
-                                } else {
-                                  null;
-                                }
+                                handleCreateAccount();
                               },
                               bgcolor: _usernameController.text.isEmpty ||
                                       _passwordController.text.isEmpty

@@ -27,24 +27,11 @@ class _UsersListState extends State<UsersList> {
       children: [
         Padding(
           padding: const EdgeInsets.all(18.0),
-          child: Row(
-            children: [
-              const Text("ADD USER"),
-              const SizedBox(
-                width: 10,
-              ),
-              GlobalButton(
-                  oncallback: () {
-                    handleadded();
-                  },
-                  title: isloadd == false ? "Add User" : "View Users"),
-              // ElevatedButton(
-              //     onPressed: () {
-              //       handleadded();
-              //     },
-              //     child: Text(isloadd == false ? "Add User" : "View Users"))
-            ],
-          ),
+          child: GlobalButton(
+              oncallback: () {
+                handleadded();
+              },
+              title: isloadd == false ? "Add User" : "View Users"),
         ),
         isloadd
             ? const UserForm(

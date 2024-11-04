@@ -36,7 +36,7 @@ class _HomePageTestState extends State<HomePageTest> {
     } else if (currentpage == 4) {
       return const Attendance();
     } else if (currentpage == 5) {
-      return const PledgesPage();
+      return const AdminPledge();
     } else if (currentpage == 6) {
       return const ArchivePage();
     } else if (currentpage == 7) {

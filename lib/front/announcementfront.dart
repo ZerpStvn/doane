@@ -23,6 +23,7 @@ class _AnnouncementFrontState extends State<AnnouncementFront> {
 
   @override
   Widget build(BuildContext context) {
+    double widthsize = MediaQuery.of(context).size.width;
     return Column(
       children: [
         const SizedBox(
@@ -80,12 +81,18 @@ class _AnnouncementFrontState extends State<AnnouncementFront> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(10),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: widthsize > 646
+                        ? const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
-                            mainAxisExtent: 360),
+                            mainAxisExtent: 360)
+                        : const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            mainAxisExtent: 260,
+                          ),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       var datafile = snapshot.data!.docs[index].data();
@@ -123,14 +130,14 @@ class _AnnouncementFrontState extends State<AnnouncementFront> {
                                       title: "${datafile['title']}",
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      size: 25,
+                                      size: widthsize > 646 ? 25 : 15,
                                     ),
                                     PrimaryFont(
                                       title:
                                           "${datafile['date']} ${datafile['time']}",
                                       color: Colors.white,
                                       fontWeight: FontWeight.normal,
-                                      size: 17,
+                                      size: widthsize > 646 ? 17 : 10,
                                     ),
                                     PrimaryFont(
                                       title: "${datafile['venue']}",

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/page/analytics.dart';
+import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 
 class Attendance extends StatefulWidget {
@@ -100,7 +101,7 @@ class _AttendanceState extends State<Attendance> {
               return SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: DataTable(
-                  headingRowColor: WidgetStateProperty.all(Colors.blue),
+                  headingRowColor: WidgetStateProperty.all(maincolor),
                   columns: const [
                     DataColumn(
                       label: Text(

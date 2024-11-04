@@ -23,6 +23,7 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
 
   @override
   Widget build(BuildContext context) {
+    double widthsize = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -80,12 +81,18 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(10),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: widthsize > 646
+                        ? const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
-                            mainAxisExtent: 360),
+                            mainAxisExtent: 360)
+                        : const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            mainAxisExtent: 260,
+                          ),
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       var datafile = snapshot.data!.docs[index].data();
@@ -123,15 +130,23 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                                       title: "${datafile['title']}",
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      size: 25,
+                                      size: widthsize > 656 ? 25 : 17,
                                     ),
-                                    PrimaryFont(
-                                      title:
-                                          "${datafile['date']} ${datafile['time']}",
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                      size: 17,
-                                    ),
+                                    widthsize > 646
+                                        ? PrimaryFont(
+                                            title:
+                                                "${datafile['date']} ${datafile['time']}",
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal,
+                                            size: 17,
+                                          )
+                                        : PrimaryFont(
+                                            title:
+                                                "${datafile['date']}\n${datafile['time']}",
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal,
+                                            size: 17,
+                                          ),
                                     PrimaryFont(
                                       title: "${datafile['venue']}",
                                       color: Colors.white,

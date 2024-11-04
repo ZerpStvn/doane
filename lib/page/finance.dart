@@ -16,6 +16,25 @@ class _FinancePageState extends State<FinancePage> {
   Map<String, double> userPledgeTotals = {}; // Store each user's total pledge
   double overallTotal = 0.0; // Store the overall total of all pledges
   bool isLoading = false; // Loading state
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _frequencyController = TextEditingController();
+  final TextEditingController _numberTimesController = TextEditingController();
+  final TextEditingController _totalAmountController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _amountController.dispose();
+    _startDateController.dispose();
+    _endDateController.dispose();
+    _frequencyController.dispose();
+    _numberTimesController.dispose();
+    _totalAmountController.dispose();
+  }
 
   @override
   void initState() {
@@ -29,7 +48,7 @@ class _FinancePageState extends State<FinancePage> {
     });
     try {
       QuerySnapshot pledgesSnapshot =
-          await FirebaseFirestore.instance.collection('pledges').get();
+          await FirebaseFirestore.instance.collection('finance').get();
 
       Map<String, double> totals = {};
       double overall = 0.0;
@@ -78,7 +97,7 @@ class _FinancePageState extends State<FinancePage> {
         Map<String, dynamic> pledgeData =
             pledgeDoc.data() as Map<String, dynamic>;
 
-        pledgeData['type'] = 'pledge';
+        pledgeData['type'] = 'finance';
 
         await FirebaseFirestore.instance.collection('archive').add(pledgeData);
         await FirebaseFirestore.instance
@@ -86,9 +105,9 @@ class _FinancePageState extends State<FinancePage> {
             .doc(pledgeId)
             .delete();
 
-        _showSnackbar('Pledge deleted and archived successfully!');
+        _showSnackbar('Finance deleted and archived successfully!');
       } else {
-        _showSnackbar('Pledge not found!');
+        _showSnackbar('Finance not found!');
       }
     } catch (e) {
       _showSnackbar('Error deleting and archiving pledge: $e');
@@ -102,7 +121,7 @@ class _FinancePageState extends State<FinancePage> {
 
     // Fetch the pledge data from Firestore
     QuerySnapshot pledgesSnapshot =
-        await FirebaseFirestore.instance.collection('pledges').get();
+        await FirebaseFirestore.instance.collection('finance').get();
 
     // Create PDF content
     pdf.addPage(
@@ -120,7 +139,7 @@ class _FinancePageState extends State<FinancePage> {
                   style: pw.TextStyle(
                       fontSize: 18, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 24),
-              pw.Text('Pledge Details',
+              pw.Text('Finance Details',
                   style: pw.TextStyle(
                       fontSize: 18, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 16),
@@ -170,6 +189,18 @@ class _FinancePageState extends State<FinancePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          ElevatedButton.icon(
+            onPressed: _showAddPledgeDialog,
+            icon: const Icon(Icons.add),
+            label: const Text('Add New Pledge'),
+          ),
+
+          const SizedBox(height: 32),
+
+          const Text(
+            'Finance Details',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const Text(
             'Finance Overview',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -191,13 +222,13 @@ class _FinancePageState extends State<FinancePage> {
           const SizedBox(height: 24),
           const SizedBox(height: 32),
           const Text(
-            'Pledge Details',
+            'Finance Details',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           StreamBuilder<QuerySnapshot>(
             stream:
-                FirebaseFirestore.instance.collection('pledges').snapshots(),
+                FirebaseFirestore.instance.collection('finance').snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
@@ -289,5 +320,103 @@ class _FinancePageState extends State<FinancePage> {
         ],
       ),
     );
+  }
+
+  Future<void> _showAddPledgeDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Add New Pledge"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTextField("Name", _nameController),
+                _buildTextField("Amount", _amountController),
+                _buildTextField("Start Date", _startDateController),
+                _buildTextField("End Date", _endDateController),
+                _buildTextField("Frequency", _frequencyController),
+                _buildTextField("Number of Times", _numberTimesController),
+                _buildTextField("Total Amount", _totalAmountController),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: _addPledge,
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Helper function to build a TextField
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+      keyboardType: label == "Amount" ||
+              label == "Total Amount" ||
+              label == "Number of Times"
+          ? TextInputType.number
+          : TextInputType.text,
+    );
+  }
+
+// Function to add a new pledge to Firestore
+  Future<void> _addPledge() async {
+    try {
+      // Get values from controllers
+      String name = _nameController.text.trim();
+      String amount = _amountController.text.trim();
+      String startDate = _startDateController.text.trim();
+      String endDate = _endDateController.text.trim();
+      String frequency = _frequencyController.text.trim();
+      String numberTimes = _numberTimesController.text.trim();
+      String totalAmount = _totalAmountController.text.trim();
+
+      // Validate required fields
+      if (name.isEmpty || amount.isEmpty || totalAmount.isEmpty) {
+        _showSnackbar("Please fill in the required fields.");
+        return;
+      }
+
+      // Save the pledge data to Firestore
+      await FirebaseFirestore.instance.collection('finance').add({
+        'name': name,
+        'amount': amount,
+        'startDate': startDate,
+        'endDate': endDate,
+        'frequency': frequency,
+        'numberTimes': numberTimes,
+        'totalAmount': totalAmount,
+      });
+
+      // Clear controllers and close the dialog
+      _clearControllers();
+      Navigator.of(context).pop();
+
+      _showSnackbar("Pledge added successfully!");
+    } catch (e) {
+      _showSnackbar("Error adding pledge: $e");
+    }
+  }
+
+// Clear all controllers
+  void _clearControllers() {
+    _nameController.clear();
+    _amountController.clear();
+    _startDateController.clear();
+    _endDateController.clear();
+    _frequencyController.clear();
+    _numberTimesController.clear();
+    _totalAmountController.clear();
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const maincolor = Color(0xff6295A2);
+const maincolor = Color(0xff0B192C);
 
 class PrimaryFont extends StatelessWidget {
   final String title;

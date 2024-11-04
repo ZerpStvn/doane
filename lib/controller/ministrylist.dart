@@ -154,8 +154,9 @@ class _MinistryListContState extends State<MinistryListCont> {
               child: DataTable(
                 showCheckboxColumn: true,
                 headingRowColor: const WidgetStatePropertyAll(maincolor),
-                headingRowHeight: 30,
-                border: TableBorder.all(width: 0.10, color: Colors.black),
+                headingRowHeight: 60,
+                dataRowMaxHeight: 55,
+                // border: TableBorder.all(width: 0.10, color: Colors.black),
                 headingTextStyle: const TextStyle(color: Colors.white),
                 columns: const [
                   DataColumn(

@@ -21,6 +21,7 @@ class _EventsPageState extends State<EventsPage> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   final _othersController = TextEditingController();
+  final _newtextimage = TextEditingController();
   bool isLoading = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -65,6 +66,7 @@ class _EventsPageState extends State<EventsPage> {
       setState(() {
         _imageData = imageInfo.data;
         _imageName = imageInfo.fileName;
+        _newtextimage.text = imageInfo.fileName.toString();
       });
     }
   }
@@ -208,15 +210,11 @@ class _EventsPageState extends State<EventsPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Event List',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 GlobalButton(
                     oncallback: () {
                       showCreateEvent(context);
                     },
-                    title: "Create New"),
+                    title: "Create New Event"),
               ],
             ),
             const SizedBox(height: 16),
@@ -331,149 +329,148 @@ class _EventsPageState extends State<EventsPage> {
       builder: (context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(16.0),
-          title: const Text(
-            'Add Event',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Add Events',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.40,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Add Events',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the events title';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _venueController,
-                  decoration: const InputDecoration(
-                    labelText: 'Venue',
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the venue';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _dateController,
-                  decoration: InputDecoration(
-                    labelText: 'Date',
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.calendar_today),
-                      onPressed: () {
-                        _selectDate(context);
-                      },
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the events title';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the date';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _timeController,
-                  decoration: InputDecoration(
-                    labelText: 'Time',
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.access_time),
-                      onPressed: () {
-                        _selectTime(context);
-                      },
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _venueController,
+                    decoration: const InputDecoration(
+                      labelText: 'Venue',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the venue';
+                      }
+                      return null;
+                    },
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter the time';
-                    }
-                    return null;
-                  },
-                  readOnly: true,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: TextEditingController(
-                          text: _imageName ?? '',
-                        ),
-                        decoration: const InputDecoration(
-                          labelText: 'Image',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        readOnly: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select an image';
-                          }
-                          return null;
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _dateController,
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                      border: const OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.calendar_today),
+                        onPressed: () {
+                          _selectDate(context);
                         },
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.image),
-                      onPressed: _pickImage,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _othersController,
-                  decoration: const InputDecoration(
-                    labelText: 'Others',
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the date';
+                      }
+                      return null;
+                    },
+                    readOnly: true,
                   ),
-                ),
-                const SizedBox(height: 16),
-                isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : GlobalButton(
-                        oncallback: () {
-                          _submitAnnouncement();
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _timeController,
+                    decoration: InputDecoration(
+                      labelText: 'Time',
+                      border: const OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.access_time),
+                        onPressed: () {
+                          _selectTime(context);
                         },
-                        title: "Submit Events"),
-                // ElevatedButton(
-                //   onPressed: _submitAnnouncement,
-                //   child: const Text('Submit Events'),
-                // ),
-              ],
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the time';
+                      }
+                      return null;
+                    },
+                    readOnly: true,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _newtextimage,
+                          decoration: const InputDecoration(
+                            labelText: 'Image',
+                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          readOnly: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select an image';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.image),
+                        onPressed: _pickImage,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _othersController,
+                    decoration: const InputDecoration(
+                      labelText: 'Others',
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      fillColor: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : GlobalButton(
+                          oncallback: () async {
+                            _submitAnnouncement().then((uid) {
+                              Navigator.pop(context);
+                            });
+                          },
+                          title: "Submit Events"),
+                  // ElevatedButton(
+                  //   onPressed: _submitAnnouncement,
+                  //   child: const Text('Submit Events'),
+                  // ),
+                ],
+              ),
             ),
           ),
           actions: [

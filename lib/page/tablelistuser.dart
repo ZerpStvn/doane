@@ -142,7 +142,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.50,
+                  width: MediaQuery.of(context).size.width * 0.20,
                   child: Row(
                     children: [
                       Expanded(
@@ -171,9 +171,8 @@ class _UsersDatalistState extends State<UsersDatalist> {
                             showCheckboxColumn: false,
                             headingRowColor:
                                 const WidgetStatePropertyAll(maincolor),
-                            headingRowHeight: 30,
-                            border: TableBorder.all(
-                                width: 0.10, color: Colors.black),
+                            headingRowHeight: 60,
+                            dataRowMaxHeight: 55,
                             headingTextStyle:
                                 const TextStyle(color: Colors.white),
                             columns: [

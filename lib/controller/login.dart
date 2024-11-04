@@ -31,8 +31,21 @@ class _LoginContState extends State<LoginCont> {
   @override
   void initState() {
     super.initState();
+    _initializeFirebaseAuth();
     _email.text = "doane@doanechurch.com";
     _pass.text = "123456";
+  }
+
+  Future<void> _initializeFirebaseAuth() async {
+    // Ensure Firebase persistence is set correctly
+    try {
+      await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
+    } catch (e) {
+      debugPrint("Error setting Firebase persistence: $e");
+      setState(() {
+        errormessage = "Error initializing Firebase.";
+      });
+    }
   }
 
   @override
@@ -123,17 +136,18 @@ class _LoginContState extends State<LoginCont> {
                       ),
                       const SizedBox(height: 20),
                       TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const UserRegistration()));
-                          },
-                          child: const Text(
-                            "Don't have an account? Pre Register",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const UserRegistration()),
+                          );
+                        },
+                        child: const Text(
+                          "Don't have an account? Pre Register",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       SizedBox(
                         width: 260,
@@ -155,7 +169,7 @@ class _LoginContState extends State<LoginCont> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -164,26 +178,35 @@ class _LoginContState extends State<LoginCont> {
   Future<void> handlesubmit() async {
     setState(() {
       isloading = true;
+      errormessage = "";
     });
+
     try {
       if (_formkey.currentState!.validate()) {
+        // Authenticate the user using Firebase Auth
         UserCredential userCredential =
             await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _email.text,
           password: _pass.text,
         );
+        debugPrint("User authenticated: ${userCredential.user!.uid}");
 
         // Store the user’s UID to persist login state
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('uid', userCredential.user!.uid);
+        debugPrint("User UID saved to shared preferences");
 
+        // Fetch user document to check verification status
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
             .get();
 
         if (userDoc.exists) {
+          debugPrint("User data fetched from Firestore: ${userDoc.data()}");
+
           int verifStatus = userDoc['verif'] ?? 0;
+          debugPrint("Verification status: $verifStatus");
 
           if (verifStatus == 3 && mounted) {
             Navigator.pushAndRemoveUntil(
@@ -211,11 +234,10 @@ class _LoginContState extends State<LoginCont> {
       }
     } catch (e) {
       setState(() {
-        errormessage = "Password and Email did not match";
+        errormessage = "$e";
+        debugPrint("$e");
         isloading = false;
       });
     }
   }
-
-
 }
