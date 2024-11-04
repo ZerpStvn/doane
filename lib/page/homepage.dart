@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/controller/ministrylist.dart';
+import 'package:doane/front/indexmain.dart';
 import 'package:doane/page/announcement.dart';
 import 'package:doane/page/archive_event.dart';
 import 'package:doane/page/attendance.dart';
@@ -17,6 +18,7 @@ import 'package:doane/page/userslist.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -125,12 +127,17 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> handlelogout() async {
     try {
-      await FirebaseAuth.instance.signOut().then((value) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginCont()),
-            (route) => false);
-      });
+      // await FirebaseAuth.instance.signOut();
+      // final prefs = await SharedPreferences.getInstance();
+      // await prefs.remove('uid');
+      // if (mounted) {
+      //   Navigator.pushAndRemoveUntil(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const Mainpage()),
+      //     (route) => false,
+      //   );
+      // }
+      print("logout");
     } catch (err) {
       debugPrint("$err");
     }
@@ -353,19 +360,19 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(
                             height: 140,
                           ),
-                          ListTile(
-                            onTap: () {
-                              handlelogout();
-                            },
-                            leading: const Icon(
-                              Icons.logout_rounded,
-                              color: Colors.white,
-                            ),
-                            title: const PrimaryFont(
-                              title: "Logout",
-                              color: Colors.white,
-                            ),
-                          ),
+                          // ListTile(
+                          //   onTap: () {
+                          //     handlelogout();
+                          //   },
+                          //   leading: const Icon(
+                          //     Icons.logout_rounded,
+                          //     color: Colors.white,
+                          //   ),
+                          //   title: const PrimaryFont(
+                          //     title: "Logout",
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
