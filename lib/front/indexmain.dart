@@ -806,11 +806,14 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void showFirstAnnouncement(BuildContext context) {
+    double widthSize = MediaQuery.of(context).size.width;
     showDialog(
       context: context,
       builder: (context) {
         return SizedBox(
-          width: MediaQuery.of(context).size.width * 0.60,
+          width: widthSize > 656
+              ? MediaQuery.of(context).size.width * 0.60
+              : MediaQuery.of(context).size.width * 0.90,
           child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('announcements')
@@ -839,7 +842,9 @@ class _MainpageState extends State<Mainpage> {
                 ],
                 title: const Text('Latest Announcements'),
                 content: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.40,
+                  width: widthSize > 656
+                      ? MediaQuery.of(context).size.width * 0.40
+                      : MediaQuery.of(context).size.width * 0.90,
                   child: ListView(
                     children: snapshot.data!.docs.map((doc) {
                       var dataID = doc.id;
@@ -851,33 +856,64 @@ class _MainpageState extends State<Mainpage> {
                                   builder: (context) => PreRegistrationPage(
                                       docsID: dataID, page: 0)));
                         },
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 230,
-                              width: 230,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          checkimage(doc['image'])))),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc['title'],
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                Text('${doc['date']} at ${doc['time']}'),
-                                Text(doc['venue']),
-                              ],
-                            ),
-                          ],
-                        ),
+                        child: widthSize >= 456
+                            ? Row(
+                                children: [
+                                  Container(
+                                    height: widthSize > 656 ? 230 : 130,
+                                    width: widthSize > 656 ? 230 : 130,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                checkimage(doc['image'])))),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        doc['title'],
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      Text('${doc['date']} at ${doc['time']}'),
+                                      Text(doc['venue']),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: widthSize > 656 ? 230 : 130,
+                                    width: widthSize > 656 ? 230 : 130,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                checkimage(doc['image'])))),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        doc['title'],
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      Text('${doc['date']} at ${doc['time']}'),
+                                      Text(doc['venue']),
+                                    ],
+                                  ),
+                                ],
+                              ),
                       );
                     }).toList(),
                   ),
@@ -891,11 +927,14 @@ class _MainpageState extends State<Mainpage> {
   }
 
   void showSecondEvent(BuildContext context) {
+    double widthSize = MediaQuery.of(context).size.width;
     showDialog(
       context: context,
       builder: (context) {
         return SizedBox(
-          width: MediaQuery.of(context).size.width * 0.60,
+          width: widthSize > 656
+              ? MediaQuery.of(context).size.width * 0.40
+              : MediaQuery.of(context).size.width * 0.90,
           child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('events')
@@ -923,7 +962,9 @@ class _MainpageState extends State<Mainpage> {
                 ],
                 title: const Text('Latest Events'),
                 content: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.40,
+                  width: widthSize > 656
+                      ? MediaQuery.of(context).size.width * 0.60
+                      : MediaQuery.of(context).size.width * 0.90,
                   child: ListView(
                     children: snapshot.data!.docs.map((doc) {
                       var dataID = doc.id;
@@ -935,33 +976,64 @@ class _MainpageState extends State<Mainpage> {
                                   builder: (context) => PreRegistrationPage(
                                       docsID: dataID, page: 1)));
                         },
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 230,
-                              width: 230,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                          checkimage(doc['image'])))),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  doc['title'],
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                Text('${doc['date']} at ${doc['time']}'),
-                                Text(doc['venue']),
-                              ],
-                            ),
-                          ],
-                        ),
+                        child: widthSize >= 456
+                            ? Row(
+                                children: [
+                                  Container(
+                                    height: widthSize > 656 ? 230 : 130,
+                                    width: widthSize > 656 ? 230 : 130,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                checkimage(doc['image'])))),
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        doc['title'],
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      Text('${doc['date']} at ${doc['time']}'),
+                                      Text(doc['venue']),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: widthSize > 656 ? 230 : 130,
+                                    width: widthSize > 656 ? 230 : 130,
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                checkimage(doc['image'])))),
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        doc['title'],
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
+                                      Text('${doc['date']} at ${doc['time']}'),
+                                      Text(doc['venue']),
+                                    ],
+                                  ),
+                                ],
+                              ),
                       );
                     }).toList(),
                   ),
@@ -974,13 +1046,13 @@ class _MainpageState extends State<Mainpage> {
     );
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     showFirstAnnouncement(context);
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showFirstAnnouncement(context);
+    });
+  }
 }
 //  <script type="module">
     //   // Import the functions you need from the SDKs you need
