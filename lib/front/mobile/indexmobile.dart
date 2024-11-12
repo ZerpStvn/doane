@@ -595,6 +595,63 @@ class _MobileMainPageState extends State<MobileMainPage> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              color: Colors.black,
+              child: const Padding(
+                padding: EdgeInsets.all(30.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'DOANE',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Baptist, member of a group of Protestant Christians who share the basic beliefs of most Protestants but who insist that only believers should be baptized',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      'Contact Us',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ListTile(
+                      textColor: Colors.white,
+                      iconColor: Colors.white,
+                      leading: Icon(Icons.email_outlined),
+                      title: Text("dbcincilo@gmail.com"),
+                    ),
+                    ListTile(
+                      textColor: Colors.white,
+                      iconColor: Colors.white,
+                      leading: Icon(Icons.pin_drop_outlined),
+                      title: Text("Bonifacio Drive, Iloilo City, Philippines"),
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),

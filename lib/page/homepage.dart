@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/globalbutton.dart';
 import 'package:doane/controller/login.dart';
 import 'package:doane/controller/ministrylist.dart';
 import 'package:doane/front/indexmain.dart';
@@ -543,16 +544,24 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             )
-          : const Scaffold(
+          : Scaffold(
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
+                  const Center(
                     child: Text(
                         textAlign: TextAlign.center,
                         "Only Available In Desktop View\nFor Awesome Experience"),
-                  )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  GlobalButton(
+                      oncallback: () {
+                        logout();
+                      },
+                      title: "Return Home")
                 ],
               ),
             ),

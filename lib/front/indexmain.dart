@@ -868,7 +868,7 @@ class _MainpageState extends State<Mainpage> {
                                             image: NetworkImage(
                                                 checkimage(doc['image'])))),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 20,
                                   ),
                                   Column(
@@ -897,7 +897,7 @@ class _MainpageState extends State<Mainpage> {
                                             image: NetworkImage(
                                                 checkimage(doc['image'])))),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 20,
                                   ),
                                   Column(
