@@ -192,7 +192,7 @@ class _FinancePageState extends State<FinancePage> {
           ElevatedButton.icon(
             onPressed: _showAddPledgeDialog,
             icon: const Icon(Icons.add),
-            label: const Text('Add New Pledge'),
+            label: const Text('Add New Finance'),
           ),
 
           const SizedBox(height: 32),
@@ -209,7 +209,7 @@ class _FinancePageState extends State<FinancePage> {
           Row(
             children: [
               const Text(
-                'Overall Total Pledged: ',
+                'Overall Total Finances: ',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
@@ -327,7 +327,7 @@ class _FinancePageState extends State<FinancePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Add New Pledge"),
+          title: const Text("Add New Finance"),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                                           image: DecorationImage(
                                               fit: BoxFit.cover,
                                               image: NetworkImage(
-                                                  "https://cdn-hpmbn.nitrocdn.com/lLGZmTrNuTAGoUUpnHcgwEDrCoxqFTkT/assets/images/optimized/rev-821e4d1/louisianabaptists.org/wp/wp-content/uploads/2020/08/featured-bis-annualchurchprofile.jpg"))),
+                                                  "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
                                       child: Container()),
                                 ),
                                 const Padding(
@@ -403,7 +403,7 @@ class _HomePageState extends State<HomePage> {
                                         image: DecorationImage(
                                             fit: BoxFit.cover,
                                             image: NetworkImage(
-                                                "https://cdn-hpmbn.nitrocdn.com/lLGZmTrNuTAGoUUpnHcgwEDrCoxqFTkT/assets/images/optimized/rev-821e4d1/louisianabaptists.org/wp/wp-content/uploads/2020/08/featured-bis-annualchurchprofile.jpg"))),
+                                                "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"))),
                                     child: Container()),
                               ),
                               const Padding(
