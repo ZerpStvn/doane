@@ -32,8 +32,6 @@ class _LoginContState extends State<LoginCont> {
   void initState() {
     super.initState();
     _initializeFirebaseAuth();
-    _email.text = "doane@doanechurch.com";
-    _pass.text = "123456";
   }
 
   Future<void> _initializeFirebaseAuth() async {

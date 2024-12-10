@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +12,15 @@ class ListUserPledges extends StatefulWidget {
 class _ListUserPledgesState extends State<ListUserPledges> {
   final userAuth = FirebaseAuth.instance;
   String searchQuery = '';
+  DateTime? startDate;
+  DateTime? endDate;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Search field
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: SizedBox(
@@ -36,6 +38,48 @@ class _ListUserPledgesState extends State<ListUserPledges> {
             ),
           ),
         ),
+
+        // Date range picker
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () async {
+              final pickedDateRange = await showDateRangePicker(
+                context: context,
+                firstDate: DateTime(2000),
+                lastDate: DateTime.now(),
+              );
+              if (pickedDateRange != null) {
+                setState(() {
+                  startDate = pickedDateRange.start;
+                  endDate = pickedDateRange.end;
+                });
+              }
+            },
+            child: Text(
+              startDate == null || endDate == null
+                  ? 'Select Date Range'
+                  : 'Selected Date Range: ${startDate!.toLocal()} - ${endDate!.toLocal()}',
+            ),
+          ),
+        ),
+
+        // Clear Filters Button
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                searchQuery = ''; // Clear search query
+                startDate = null; // Clear start date
+                endDate = null; // Clear end date
+              });
+            },
+            child: const Text('Clear Filters'),
+          ),
+        ),
+
+        // StreamBuilder to display pledges
         StreamBuilder<QuerySnapshot>(
           stream:
               FirebaseFirestore.instance.collectionGroup('cpledge').snapshots(),
@@ -52,17 +96,30 @@ class _ListUserPledgesState extends State<ListUserPledges> {
               return const Center(child: Text('No pledges found.'));
             }
 
-            // Filter pledges based on search query
+            // Filter pledges based on search query and date range
             final pledges = snapshot.data!.docs.where((doc) {
-              return (doc['pledgename'] as String)
-                  .toLowerCase()
-                  .contains(searchQuery.toLowerCase());
+              final pledgeName = (doc['pledgename'] as String).toLowerCase();
+              final createdDate = (doc['created'] as Timestamp).toDate();
+
+              bool matchesSearchQuery =
+                  pledgeName.contains(searchQuery.toLowerCase());
+              bool matchesDateRange = true;
+
+              if (startDate != null && endDate != null) {
+                // Ensure the date range includes the entire day on the endDate
+                final endOfDay = DateTime(
+                    endDate!.year, endDate!.month, endDate!.day, 23, 59, 59);
+                matchesDateRange = createdDate.isAfter(startDate!) &&
+                    createdDate.isBefore(endOfDay.add(const Duration(days: 1)));
+              }
+
+              return matchesSearchQuery && matchesDateRange;
             }).toList();
 
             return SizedBox(
               width: MediaQuery.of(context).size.width * 0.90,
               child: DataTable(
-                headingRowColor: const WidgetStatePropertyAll(maincolor),
+                headingRowColor: MaterialStateProperty.all(Colors.blue),
                 headingTextStyle: const TextStyle(color: Colors.white),
                 columns: const [
                   DataColumn(label: Text('Amount')),
@@ -73,14 +130,14 @@ class _ListUserPledgesState extends State<ListUserPledges> {
                 rows: pledges.map((doc) {
                   final amount = doc['amount'];
                   final created = (doc['created'] as Timestamp).toDate();
-                  final pledgename = doc['pledgename'];
+                  final pledgeName = doc['pledgename'];
                   final type = doc['type'];
 
                   return DataRow(
                     cells: [
                       DataCell(Text(amount.toString())),
                       DataCell(Text(created.toString())),
-                      DataCell(Text(pledgename)),
+                      DataCell(Text(pledgeName)),
                       DataCell(Text(type)),
                     ],
                   );

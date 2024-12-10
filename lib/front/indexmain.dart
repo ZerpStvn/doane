@@ -128,39 +128,69 @@ class _MainpageState extends State<Mainpage> {
                               ),
                               Row(
                                 children: [
-                                  // TextButton(
-                                  //   onPressed: () {},
-                                  //   child: const PrimaryFont(
-                                  //     title: "Events",
-                                  //     color: Colors.white,
-                                  //   ),
-                                  // ),
-                                  // const SizedBox(
-                                  //   width: 15,
-                                  // ),
-                                  // TextButton(
-                                  //   onPressed: () {},
-                                  //   child: const PrimaryFont(
-                                  //     title: "Anouncements",
-                                  //     color: Colors.white,
-                                  //   ),
-                                  // ),
-                                  // const SizedBox(
-                                  //   width: 15,
-                                  // ),
-                                  // TextButton(
-                                  //   onPressed: () {},
-                                  //   child: const PrimaryFont(
-                                  //     title: "Contact",
-                                  //     color: Colors.white,
-                                  //   ),
-                                  // ),
-                                  // const SizedBox(
-                                  //   width: 15,
-                                  // ),
+                                  Row(
+                                    children: [
+                                      // TextButton(
+                                      //   onPressed: () {},
+                                      //   child: const PrimaryFont(
+                                      //     title: "Events",
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                      // const SizedBox(
+                                      //   width: 15,
+                                      // ),
+                                      // TextButton(
+                                      //   onPressed: () {},
+                                      //   child: const PrimaryFont(
+                                      //     title: "Anouncements",
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                      // const SizedBox(
+                                      //   width: 15,
+                                      // ),
+                                      // TextButton(
+                                      //   onPressed: () {},
+                                      //   child: const PrimaryFont(
+                                      //     title: "Contact",
+                                      //     color: Colors.white,
+                                      //   ),
+                                      // ),
+                                      // const SizedBox(
+                                      //   width: 15,
+                                      // ),
+                                      SizedBox(
+                                        height: 48,
+                                        width: 100,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.lightBlueAccent,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            9))),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginCont()));
+                                            },
+                                            child: const PrimaryFont(
+                                              title: "Login",
+                                              color: Colors.white,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
                                   SizedBox(
                                     height: 48,
-                                    width: 100,
+                                    width: 170,
                                     child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor:
@@ -169,14 +199,10 @@ class _MainpageState extends State<Mainpage> {
                                                 borderRadius:
                                                     BorderRadius.circular(9))),
                                         onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginCont()));
+                                          urldlaunchUrl();
                                         },
                                         child: const PrimaryFont(
-                                          title: "Login",
+                                          title: "Download App",
                                           color: Colors.white,
                                         )),
                                   ),
@@ -337,7 +363,7 @@ class _MainpageState extends State<Mainpage> {
                             width: 10,
                           ),
                           const PrimaryFont(
-                            title: "Anouncements",
+                            title: "Announcements",
                             color: Colors.black,
                             fontWeight: FontWeight.normal,
                             size: 21,
@@ -924,6 +950,13 @@ class _MainpageState extends State<Mainpage> {
         );
       },
     );
+  }
+
+  final String _durl = "https://xnakii.github.io/daoneappdownload/";
+  Future<void> urldlaunchUrl() async {
+    if (!await launchUrl(Uri.parse(_durl))) {
+      throw 'Could not launch $_durl';
+    }
   }
 
   void showSecondEvent(BuildContext context) {

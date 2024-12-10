@@ -100,7 +100,7 @@ class _MobileMainPageState extends State<MobileMainPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const PrimaryFont(
-                          title: "DOANE BAPTIST CHURCH",
+                          title: "DOANE",
                           color: Colors.white,
                           size: 12,
                         ),
@@ -159,6 +159,22 @@ class _MobileMainPageState extends State<MobileMainPage> {
                                   )),
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: 38,
+                          width: 130,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.lightBlueAccent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(9))),
+                              onPressed: () {
+                                urldlaunchUrl();
+                              },
+                              child: const PrimaryFont(
+                                title: "Download ",
+                                color: Colors.white,
+                              )),
                         )
                       ],
                     ))
@@ -662,6 +678,13 @@ class _MobileMainPageState extends State<MobileMainPage> {
   Future<void> urllaunchUrl() async {
     if (!await launchUrl(Uri.parse(_url))) {
       throw 'Could not launch $_url';
+    }
+  }
+
+  final String _durl = "https://xnakii.github.io/daoneappdownload/";
+  Future<void> urldlaunchUrl() async {
+    if (!await launchUrl(Uri.parse(_durl))) {
+      throw 'Could not launch $_durl';
     }
   }
 

@@ -42,8 +42,9 @@ class _UserFormState extends State<UserForm> {
   String _maritalStatus = 'Single';
   // String _membershipStatus = 'Active';
   final List<String> _selectedMinistries = [];
-  List<String> _ministryList = [];
+  List<String> ministryList = [];
   bool isLoading = false;
+  String? selectedMinistry;
 
   @override
   void initState() {
@@ -52,15 +53,21 @@ class _UserFormState extends State<UserForm> {
   }
 
   Future<void> _fetchMinistries() async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('ministry').get();
+          await firestore.collection('ministry').get();
       setState(() {
-        _ministryList =
-            querySnapshot.docs.map((doc) => doc['name'] as String).toList();
+        ministryList =
+            querySnapshot.docs.map((doc) => doc['name'].toString()).toList();
+
+        if (ministryList.isNotEmpty &&
+            !ministryList.contains(selectedMinistry)) {
+          selectedMinistry = ministryList.first;
+        }
       });
     } catch (e) {
-      debugPrint('Error fetching ministries: $e');
+      print('Error fetching ministries: $e');
     }
   }
 
@@ -156,13 +163,9 @@ class _UserFormState extends State<UserForm> {
   }
 
   void _addMinistry() {
-    if (_newMinistryController.text.isNotEmpty &&
-        !_selectedMinistries.contains(_newMinistryController.text)) {
-      setState(() {
-        _selectedMinistries.add(_newMinistryController.text);
-        _newMinistryController.clear();
-      });
-    }
+    setState(() {
+      _selectedMinistries.add(selectedMinistry ?? "Unkown");
+    });
   }
 
   void _showSnackbar(String message) {
@@ -348,10 +351,25 @@ class _UserFormState extends State<UserForm> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _newMinistryController,
+              DropdownButtonFormField<String>(
+                value: selectedMinistry,
                 decoration: const InputDecoration(
-                    labelText: 'Add a Ministry', border: OutlineInputBorder()),
+                  labelText: 'Add a Ministry',
+                  border: OutlineInputBorder(),
+                ),
+                items: ministryList.map((ministry) {
+                  return DropdownMenuItem<String>(
+                    value: ministry,
+                    child: Text(ministry),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedMinistry = value;
+                  });
+                },
+                validator: (value) =>
+                    value == null ? 'Please select a ministry' : null,
               ),
               const SizedBox(height: 16),
               ElevatedButton(

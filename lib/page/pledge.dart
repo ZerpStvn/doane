@@ -18,13 +18,17 @@ class _AdminPledgeState extends State<AdminPledge> {
   final _formkey = GlobalKey<FormState>();
   final _formkey2 = GlobalKey<FormState>();
   final userAuth = FirebaseAuth.instance;
+  final _searchController = TextEditingController();
+  List<Map<String, dynamic>> filteredPledges = [];
 
+  DateTime? _selectedDate;
   List<Map<String, dynamic>> pledges = [];
 
   @override
   void initState() {
     super.initState();
     fetchPledges(); // Fetch pledges when the widget initializes
+    _searchController.addListener(_filterPledges);
   }
 
   void _showSnackbar(String message) {
@@ -220,7 +224,59 @@ class _AdminPledgeState extends State<AdminPledge> {
     _amountController.dispose();
     _pledgeamountController.dispose();
     _pledgenameController.dispose();
+    _searchController.dispose();
     _descriptionController.dispose();
+  }
+
+  void _filterPledges() {
+    String query = _searchController.text.toLowerCase();
+
+    setState(() {
+      filteredPledges = pledges.where((pledge) {
+        bool matchesSearch = pledge['name'].toLowerCase().contains(query);
+
+        if (_selectedDate != null) {
+          bool matchesDate = pledge['created']
+                  .isAtSameMomentAs(_selectedDate!) ||
+              (pledge['created'].isAfter(_selectedDate!) &&
+                  pledge['created']
+                      .isBefore(_selectedDate!.add(const Duration(days: 1))));
+          return matchesSearch && matchesDate;
+        }
+
+        return matchesSearch;
+      }).toList();
+    });
+  }
+
+  Future<void> _selectDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        _filterPledges();
+      });
+    }
+  }
+
+  void _clearFilter() {
+    setState(() {
+      _selectedDate = null;
+      _searchController.clear();
+      filteredPledges = List.from(pledges); // Reset filtered list
+    });
+  }
+
+  void refresh() {
+    setState(() {
+      _filterPledges();
+    });
   }
 
   @override
@@ -229,7 +285,42 @@ class _AdminPledgeState extends State<AdminPledge> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.40,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        labelText: 'Search Pledges',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _selectDate,
+                    child: const Text("Filter by Date"),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    onPressed: _clearFilter,
+                    icon: const Icon(Icons.clear),
+                    tooltip: "Clear Filters",
+                  ),
+                  IconButton(
+                    onPressed: refresh,
+                    icon: const Icon(Icons.refresh),
+                    tooltip: "refresh",
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -264,9 +355,9 @@ class _AdminPledgeState extends State<AdminPledge> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 2 / 1.9,
                     ),
-                    itemCount: pledges.length,
+                    itemCount: filteredPledges.length,
                     itemBuilder: (context, index) {
-                      var pledge = pledges[index];
+                      var pledge = filteredPledges[index];
                       var pledgeID = pledge['id']; // Correct access to ID
                       return Card(
                         elevation: 2,
@@ -290,7 +381,7 @@ class _AdminPledgeState extends State<AdminPledge> {
                                   ),
                                   Positioned(
                                       child: Container(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4),
                                         color: pledge['amount'] != 0
@@ -304,7 +395,7 @@ class _AdminPledgeState extends State<AdminPledge> {
                                             onPressed: () {
                                               deletepledge(pledge['id']);
                                             },
-                                            icon: Icon(
+                                            icon: const Icon(
                                               Icons.delete,
                                               color: Colors.red,
                                             )),
@@ -329,38 +420,6 @@ class _AdminPledgeState extends State<AdminPledge> {
                               Text("Amount: Php ${pledge['amount']}"),
                               const SizedBox(height: 5),
                               Text("Description: ${pledge['description']}"),
-                              // SizedBox(
-                              //   height: 28,
-                              //   child: ElevatedButton(
-                              //     style: ElevatedButton.styleFrom(
-                              //       backgroundColor: Colors.blue,
-                              //       shape: RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(9),
-                              //       ),
-                              //     ),
-                              //     onPressed: () {
-                              //       double amount = 0.0;
-
-                              //       if (pledge['amount'] is int) {
-                              //         amount =
-                              //             (pledge['amount'] as int).toDouble();
-                              //       } else if (pledge['amount'] is double) {
-                              //         amount = pledge['amount'];
-                              //       } else if (pledge['amount'] is String) {
-                              //         amount =
-                              //             double.tryParse(pledge['amount']) ??
-                              //                 0.0;
-                              //       }
-
-                              //       showPledgeDialog2(
-                              //           pledgeID, pledge['name'], amount);
-                              //     },
-                              //     child: const Text(
-                              //       "Add",
-                              //       style: TextStyle(color: Colors.white),
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
