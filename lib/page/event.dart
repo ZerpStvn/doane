@@ -98,6 +98,16 @@ class _EventsPageState extends State<EventsPage> {
           'others': _othersController.text,
           'created': Timestamp.now(),
         });
+        await FirebaseFirestore.instance.collection('notifcations').add({
+          'title': _titleController.text,
+          'venue': _venueController.text,
+          'date': _dateController.text,
+          'time': _timeController.text,
+          'image': imageUrl ?? "",
+          'others': _othersController.text,
+          'created': Timestamp.now(),
+          'type': 'events',
+        });
         _showSnackbar('events submitted successfully!');
         _clearForm();
       } catch (e) {

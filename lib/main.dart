@@ -48,11 +48,7 @@ class AuthenticationWrapper extends StatelessWidget {
         if (snapshot.hasData) {
           return const HomePage();
         } else {
-          if (kIsWeb) {
-            return const Mainpage();
-          } else {
-            return const MobileMainPage();
-          }
+          return const Mainpage();
         }
       },
     );

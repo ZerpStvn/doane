@@ -93,6 +93,16 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           'others': _othersController.text,
           'created': Timestamp.now(),
         });
+        await FirebaseFirestore.instance.collection('notifcations').add({
+          'title': _titleController.text,
+          'venue': _venueController.text,
+          'date': _dateController.text,
+          'time': _timeController.text,
+          'image': imageUrl ?? "",
+          'others': _othersController.text,
+          'created': Timestamp.now(),
+          'type': 'announcements',
+        });
         _showSnackbar('Announcement submitted successfully!');
         _clearForm();
       } catch (e) {

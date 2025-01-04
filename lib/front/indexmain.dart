@@ -4,6 +4,7 @@ import 'package:doane/front/event.dart';
 import 'package:doane/front/mobile/indexmobile.dart';
 import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -171,88 +172,93 @@ class _MainpageState extends State<Mainpage> {
                                 color: Colors.white,
                                 size: 24,
                               ),
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      // TextButton(
-                                      //   onPressed: () {},
-                                      //   child: const PrimaryFont(
-                                      //     title: "Events",
-                                      //     color: Colors.white,
-                                      //   ),
-                                      // ),
-                                      // const SizedBox(
-                                      //   width: 15,
-                                      // ),
-                                      // TextButton(
-                                      //   onPressed: () {},
-                                      //   child: const PrimaryFont(
-                                      //     title: "Anouncements",
-                                      //     color: Colors.white,
-                                      //   ),
-                                      // ),
-                                      // const SizedBox(
-                                      //   width: 15,
-                                      // ),
-                                      // TextButton(
-                                      //   onPressed: () {},
-                                      //   child: const PrimaryFont(
-                                      //     title: "Contact",
-                                      //     color: Colors.white,
-                                      //   ),
-                                      // ),
-                                      // const SizedBox(
-                                      //   width: 15,
-                                      // ),
-                                      SizedBox(
-                                        height: 48,
-                                        width: 100,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.lightBlueAccent,
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            9))),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const LoginCont()));
-                                            },
-                                            child: const PrimaryFont(
-                                              title: "Login",
-                                              color: Colors.white,
-                                            )),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
-                                  SizedBox(
-                                    height: 48,
-                                    width: 170,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor:
-                                                Colors.lightBlueAccent,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(9))),
-                                        onPressed: () {
-                                          urldlaunchUrl();
-                                        },
-                                        child: const PrimaryFont(
-                                          title: "Download App",
-                                          color: Colors.white,
-                                        )),
-                                  ),
-                                ],
-                              )
+                              kIsWeb
+                                  ? Row(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            // TextButton(
+                                            //   onPressed: () {},
+                                            //   child: const PrimaryFont(
+                                            //     title: "Events",
+                                            //     color: Colors.white,
+                                            //   ),
+                                            // ),
+                                            // const SizedBox(
+                                            //   width: 15,
+                                            // ),
+                                            // TextButton(
+                                            //   onPressed: () {},
+                                            //   child: const PrimaryFont(
+                                            //     title: "Anouncements",
+                                            //     color: Colors.white,
+                                            //   ),
+                                            // ),
+                                            // const SizedBox(
+                                            //   width: 15,
+                                            // ),
+                                            // TextButton(
+                                            //   onPressed: () {},
+                                            //   child: const PrimaryFont(
+                                            //     title: "Contact",
+                                            //     color: Colors.white,
+                                            //   ),
+                                            // ),
+                                            // const SizedBox(
+                                            //   width: 15,
+                                            // ),
+                                            SizedBox(
+                                              height: 48,
+                                              width: 100,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors
+                                                          .lightBlueAccent,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          9))),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                const LoginCont()));
+                                                  },
+                                                  child: const PrimaryFont(
+                                                    title: "Login",
+                                                    color: Colors.white,
+                                                  )),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          width: 20,
+                                        ),
+                                        SizedBox(
+                                          height: 48,
+                                          width: 170,
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.lightBlueAccent,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              9))),
+                                              onPressed: () {
+                                                urldlaunchUrl();
+                                              },
+                                              child: const PrimaryFont(
+                                                title: "Download App",
+                                                color: Colors.white,
+                                              )),
+                                        ),
+                                      ],
+                                    )
+                                  : Container(),
                             ],
                           ))
                     ],
@@ -630,7 +636,7 @@ class _MainpageState extends State<Mainpage> {
                       ),
                     ],
                   ),
-                  const EventsFrontpage(),
+                  if (kIsWeb) const EventsFrontpage(),
                   const SizedBox(
                     height: 19,
                   ),

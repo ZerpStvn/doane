@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  emailjs:
+    dependency: "direct main"
+    description:
+      name: emailjs
+      sha256: bca1cdde15b4413a754815a0a784e6907b2cab5f2d43b753ff492493f8be55c8
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   equatable:
     dependency: transitive
     description:
@@ -313,7 +321,7 @@ packages:
     source: hosted
     version: "6.2.1"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010

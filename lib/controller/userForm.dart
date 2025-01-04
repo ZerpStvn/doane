@@ -1,9 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doane/controller/login.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
-import 'package:doane/model/users.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doane/controller/globalbutton.dart';
 import 'package:doane/controller/isedit.dart';
-import 'package:doane/controller/userForm.dart';
+import 'package:doane/controller/verified.dart';
 import 'package:doane/utils/const.dart';
+import 'package:emailjs/emailjs.dart';
 import 'package:flutter/material.dart';
 
 class UsersDatalist extends StatefulWidget {
@@ -21,7 +21,7 @@ class _UsersDatalistState extends State<UsersDatalist> {
   bool isedit = false;
   bool isview = false;
   String? userid;
-
+  final emailService = EmailService();
   @override
   void dispose() {
     _searchController.dispose();
@@ -214,10 +214,20 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                     DataCell(Text(user['email'])),
                                     DataCell(Text(user['role'])),
                                     DataCell(GestureDetector(
-                                      onTap: () {
-                                        user['verif'] != 3
-                                            ? updatedata(user['id'])
-                                            : null;
+                                      onTap: () async {
+                                        if (user['verif'] != 3) {
+                                          debugPrint(user["id"]);
+                                          updatedata(user['id']);
+                                          await emailService.sendMailVerified(
+                                              recipientEmail:
+                                                  "${user['email']}",
+                                              message: "Hello");
+                                        } else {
+                                          null;
+                                        }
+                                        await emailService.sendMailVerified(
+                                            recipientEmail: user['email'],
+                                            message: "Hello");
                                       },
                                       child: Container(
                                           padding: const EdgeInsets.all(3),

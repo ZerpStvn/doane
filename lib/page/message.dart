@@ -2,6 +2,7 @@ import 'package:doane/controller/globalbutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class MessagePage extends StatefulWidget {
   final String userId;
@@ -33,13 +34,38 @@ class _MessagePageState extends State<MessagePage> {
       'senderId': currentuser!.uid,
       'timestamp': FieldValue.serverTimestamp(),
     });
-
+    await FirebaseFirestore.instance.collection('notifcations').add({
+      'title': _messageController.text.trim(),
+      'venue': "",
+      'date': "",
+      'time': "",
+      'image': "",
+      'others': "",
+      'userid': widget.userId,
+      'created': Timestamp.now(),
+      'type': 'message',
+    });
     _messageController.clear();
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+  }
+
+  void clearMessages() async {
+    await FirebaseFirestore.instance
+        .collection('messages')
+        .doc(widget.userId)
+        .delete();
+    debugPrint("Deleting document with ID: ${widget.userId}");
+
+    setState(() {});
+  }
+
+  String formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate(); // Convert Timestamp to DateTime
+    return DateFormat('MMMM d, h:mm a').format(dateTime); // Format the DateTime
   }
 
   Widget buildMessageItem(Map<String, dynamic> message) {
@@ -53,11 +79,23 @@ class _MessagePageState extends State<MessagePage> {
           color: isSentByUser ? Colors.blueAccent : Colors.grey[300],
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(
-          message['text'],
-          style: TextStyle(
-            color: isSentByUser ? Colors.white : Colors.black,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              message['text'],
+              style: TextStyle(
+                color: isSentByUser ? Colors.white : Colors.black,
+              ),
+            ),
+            Text(
+              formatTimestamp(message['timestamp']),
+              style: const TextStyle(
+                fontSize: 10,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
