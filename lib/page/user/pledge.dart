@@ -495,7 +495,11 @@ class _UserPledgesState extends State<UserPledges> {
     }
   }
 
-  Future<void> addPledges2(String id, String name, double pledgetotal) async {
+  Future<void> addPledges2(
+    String id,
+    String name,
+    double pledgetotal,
+  ) async {
     try {
       if (_formkey2.currentState!.validate()) {
         double pledgeAmount = double.parse(_pledgeamountController.text);
@@ -511,7 +515,7 @@ class _UserPledgesState extends State<UserPledges> {
             .doc(id)
             .collection('cpledge')
             .add({
-          'amount': pledgeAmount, // Storing the amount as double
+          'amount': pledgeAmount,
           'pledgeid': id,
           'pledgename': name,
           'userid': userAuth.currentUser!.uid,
@@ -521,20 +525,20 @@ class _UserPledgesState extends State<UserPledges> {
 
         _showSnackbar("Pledge added successfully");
 
-        // Update the 'amount' in the 'newPledges' collection to the new total value
+        // Update the amount in the 'newPledges' collection, setting amount to zero if necessary
         await FirebaseFirestore.instance
             .collection('newPledges')
             .doc(userAuth.currentUser!.uid)
             .collection('pledge')
             .doc(id)
-            .update({
-          'amount': totalvalue, // Updating the amount to reflect the new total
-        });
+            .set({
+          'pledgename': name,
+          'amount': totalvalue,
+        }, SetOptions(merge: true));
 
-        // Refresh the UI
-        setState(() {
-          fetchPledges();
-        });
+        // Refresh the UI after the update is complete
+        await fetchPledges();
+        setState(() {});
       }
     } catch (error) {
       _showSnackbar("Error Adding Pledges, Please Try Again Later");
@@ -543,11 +547,8 @@ class _UserPledgesState extends State<UserPledges> {
 
   Future<void> fetchPledges() async {
     try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('newPledges')
-          .doc(userAuth.currentUser!.uid)
-          .collection('pledge')
-          .get();
+      var snapshot =
+          await FirebaseFirestore.instance.collection('addedpledges').get();
 
       setState(() {
         pledges = snapshot.docs
@@ -619,7 +620,11 @@ class _UserPledgesState extends State<UserPledges> {
     );
   }
 
-  void showPledgeDialog2(String id, String name, double pledgetotal) {
+  void showPledgeDialog2(
+    String id,
+    String name,
+    double pledgetotal,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -679,7 +684,6 @@ class _UserPledgesState extends State<UserPledges> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Pledges"),
                 SizedBox(
                   height: 48,
                   child: ElevatedButton(
@@ -709,7 +713,7 @@ class _UserPledgesState extends State<UserPledges> {
                       crossAxisCount: 4,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 2 / 2.9,
+                      childAspectRatio: 2 / 2.5,
                     ),
                     itemCount: pledges.length,
                     itemBuilder: (context, index) {
@@ -737,7 +741,7 @@ class _UserPledgesState extends State<UserPledges> {
                                   ),
                                   Positioned(
                                       child: Container(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4),
                                         color: pledge['amount'] != 0
@@ -745,55 +749,207 @@ class _UserPledgesState extends State<UserPledges> {
                                             : Colors.red),
                                     child: Text(
                                       pledge['amount'] != 0
-                                          ? "Ongoing"
+                                          ? "Pledges"
                                           : "Finished",
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),
-                                  ))
+                                  )),
+                                  Positioned(
+                                      left: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        padding: EdgeInsets.all(4),
+                                        height: 90,
+                                        width: 150,
+                                        color: const Color.fromARGB(
+                                            137, 105, 105, 105),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              pledge['name'],
+                                              style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                                "Amount: Php ${pledge['amount']}"),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                                "Description: ${pledge['description']}"),
+                                          ],
+                                        ),
+                                      ))
                                 ],
                               ),
-                              Text(
-                                pledge['name'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                              const SizedBox(
+                                height: 20,
                               ),
-                              const SizedBox(height: 5),
-                              Text("Amount: Php ${pledge['amount']}"),
-                              const SizedBox(height: 5),
-                              Text("Description: ${pledge['description']}"),
-                              SizedBox(
-                                height: 28,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(9),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    double amount = 0.0;
-
-                                    if (pledge['amount'] is int) {
-                                      amount =
-                                          (pledge['amount'] as int).toDouble();
-                                    } else if (pledge['amount'] is double) {
-                                      amount = pledge['amount'];
-                                    } else if (pledge['amount'] is String) {
-                                      amount =
-                                          double.tryParse(pledge['amount']) ??
-                                              0.0;
+                              StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('newPledges')
+                                      .doc(userAuth.currentUser!.uid)
+                                      .collection('pledge')
+                                      .doc(pledge['id'])
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData ||
+                                        snapshot.data?.data() == null) {
+                                      return Container();
+                                    } else if (snapshot.hasError) {
+                                      return Container();
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Text("Updating...");
+                                    } else {
+                                      var datasnapshot = snapshot.data!.data();
+                                      return Text(
+                                          "Remaining Pledge: Php ${datasnapshot!['amount']}");
                                     }
-
-                                    showPledgeDialog2(
-                                        pledgeID, pledge['name'], amount);
-                                  },
-                                  child: const Text(
-                                    "Add",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
+                                  }),
+                              const SizedBox(
+                                height: 20,
                               ),
+                              StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('newPledges')
+                                      .doc(userAuth.currentUser!.uid)
+                                      .collection('pledge')
+                                      .doc(pledge['id'])
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Container();
+                                    } else if (snapshot.hasError ||
+                                        snapshot.data?.data() == null) {
+                                      return SizedBox(
+                                        height: 28,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(9),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            double amount = 0.0;
+
+                                            if (pledge['amount'] is int) {
+                                              amount = (pledge['amount'] as int)
+                                                  .toDouble();
+                                            } else if (pledge['amount']
+                                                is double) {
+                                              amount = pledge['amount'];
+                                            } else if (pledge['amount']
+                                                is String) {
+                                              amount = double.tryParse(
+                                                      pledge['amount']) ??
+                                                  0.0;
+                                            }
+
+                                            showPledgeDialog2(pledgeID,
+                                                pledge['name'], amount);
+                                          },
+                                          child: const Text(
+                                            "Add",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      );
+                                    } else if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return Container();
+                                    } else {
+                                      var datasnapshot = snapshot.data!.data();
+                                      return datasnapshot!['amount'] == 0
+                                          ? Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                  color: Colors.red),
+                                              child: const Text(
+                                                "Finished",
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            )
+                                          : SizedBox(
+                                              height: 28,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.blue,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            9),
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  double amount = 0.0;
+
+                                                  if (pledge['amount'] is int) {
+                                                    amount = (pledge['amount']
+                                                            as int)
+                                                        .toDouble();
+                                                  } else if (pledge['amount']
+                                                      is double) {
+                                                    amount = pledge['amount'];
+                                                  } else if (pledge['amount']
+                                                      is String) {
+                                                    amount = double.tryParse(
+                                                            pledge['amount']) ??
+                                                        0.0;
+                                                  }
+
+                                                  if (datasnapshot['amount'] !=
+                                                      null) {
+                                                    double amount2 = 0.0;
+                                                    if (datasnapshot['amount']
+                                                        is int) {
+                                                      amount2 = (datasnapshot[
+                                                              'amount'] as int)
+                                                          .toDouble();
+                                                    } else if (datasnapshot[
+                                                        'amount'] is double) {
+                                                      amount2 = datasnapshot[
+                                                          'amount'];
+                                                    } else if (datasnapshot[
+                                                        'amount'] is String) {
+                                                      amount2 = double.tryParse(
+                                                              datasnapshot[
+                                                                  'amount']) ??
+                                                          0.0;
+                                                    }
+                                                    showPledgeDialog2(
+                                                        pledgeID,
+                                                        pledge['name'],
+                                                        amount2);
+                                                  } else {
+                                                    showPledgeDialog2(pledgeID,
+                                                        pledge['name'], amount);
+                                                  }
+                                                },
+                                                child: const Text(
+                                                  "Add",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            );
+                                    }
+                                  }),
                             ],
                           ),
                         ),

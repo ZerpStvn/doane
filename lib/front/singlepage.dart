@@ -71,6 +71,8 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+    double widthSize = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -99,7 +101,9 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                       children: [
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width * 0.40,
+                          height: widget.page == 1
+                              ? MediaQuery.of(context).size.height * 0.89
+                              : MediaQuery.of(context).size.height * 0.40,
                           decoration: BoxDecoration(
                               image: DecorationImage(
                                   fit: BoxFit.cover,
@@ -136,7 +140,7 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                           : "Announcements",
                                       color: Colors.white,
                                       fontWeight: FontWeight.normal,
-                                      size: 21,
+                                      size: 12,
                                     ),
                                     const SizedBox(
                                       width: 10,
@@ -152,7 +156,7 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                   title: datafile['title'],
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  size: 45,
+                                  size: 25,
                                 ),
                                 PrimaryFont(
                                   title:
@@ -192,155 +196,316 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                                   .size
                                                   .width *
                                               0.40,
-                                          height: 300,
+                                          height: 390,
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
                                               const SizedBox(height: 45),
-                                              const PrimaryFont(
+                                              PrimaryFont(
                                                 title: "PRE REGISTRATION",
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
-                                                size: 25,
+                                                size:
+                                                    widthSize <= 646 ? 12 : 25,
                                               ),
                                               const SizedBox(height: 15),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: TextFormField(
-                                                      style: const TextStyle(
-                                                          color: Colors.white),
-                                                      controller: fname,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        label: PrimaryFont(
-                                                          title: "Full name",
-                                                          color: Colors.white,
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                              widthSize <= 646
+                                                  ? Column(
+                                                      children: [
+                                                        TextFormField(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                          controller: fname,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            label: PrimaryFont(
+                                                              title:
+                                                                  "Full name",
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   color: Color
                                                                       .fromARGB(
                                                                           255,
                                                                           255,
                                                                           255,
                                                                           255)),
-                                                        ),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                                            ),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   width: 1,
                                                                   color: Colors
                                                                       .white),
+                                                            ),
+                                                          ),
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value.isEmpty) {
+                                                              return 'Please enter your full name';
+                                                            }
+                                                            return null;
+                                                          },
                                                         ),
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Please enter your full name';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 5),
-                                                  Expanded(
-                                                    child: TextFormField(
-                                                      style: const TextStyle(
-                                                          color: Colors.white),
-                                                      controller: email,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        label: PrimaryFont(
-                                                          title: "Email",
-                                                          color: Colors.white,
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        TextFormField(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                          controller: email,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            label: PrimaryFont(
+                                                              title: "Email",
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   color: Color
                                                                       .fromARGB(
                                                                           255,
                                                                           255,
                                                                           255,
                                                                           255)),
-                                                        ),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                                            ),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   width: 1,
                                                                   color: Colors
                                                                       .white),
+                                                            ),
+                                                          ),
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value.isEmpty) {
+                                                              return 'Please enter your email';
+                                                            }
+                                                            // Simple email validation
+                                                            if (!RegExp(
+                                                                    r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
+                                                                .hasMatch(
+                                                                    value)) {
+                                                              return 'Please enter a valid email';
+                                                            }
+                                                            return null;
+                                                          },
                                                         ),
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Please enter your email';
-                                                        }
-                                                        // Simple email validation
-                                                        if (!RegExp(
-                                                                r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
-                                                            .hasMatch(value)) {
-                                                          return 'Please enter a valid email';
-                                                        }
-                                                        return null;
-                                                      },
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 5),
-                                                  Expanded(
-                                                    child: TextFormField(
-                                                      style: const TextStyle(
-                                                          color: Colors.white),
-                                                      controller: pnum,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        label: PrimaryFont(
-                                                          title: "Phone Number",
-                                                          color: Colors.white,
-                                                        ),
-                                                        enabledBorder:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        TextFormField(
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                          controller: pnum,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            label: PrimaryFont(
+                                                              title:
+                                                                  "Phone Number",
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            enabledBorder:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   color: Color
                                                                       .fromARGB(
                                                                           255,
                                                                           255,
                                                                           255,
                                                                           255)),
-                                                        ),
-                                                        border:
-                                                            OutlineInputBorder(
-                                                          borderSide:
-                                                              BorderSide(
+                                                            ),
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderSide: BorderSide(
                                                                   width: 1,
                                                                   color: Colors
                                                                       .white),
+                                                            ),
+                                                          ),
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value.isEmpty) {
+                                                              return 'Please enter your phone number';
+                                                            }
+                                                            if (!RegExp(
+                                                                    r'^[0-9]+$')
+                                                                .hasMatch(
+                                                                    value)) {
+                                                              return 'Please enter a valid phone number';
+                                                            }
+                                                            return null;
+                                                          },
                                                         ),
-                                                      ),
-                                                      validator: (value) {
-                                                        if (value == null ||
-                                                            value.isEmpty) {
-                                                          return 'Please enter your phone number';
-                                                        }
-                                                        if (!RegExp(r'^[0-9]+$')
-                                                            .hasMatch(value)) {
-                                                          return 'Please enter a valid phone number';
-                                                        }
-                                                        return null;
-                                                      },
+                                                      ],
+                                                    )
+                                                  : Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: TextFormField(
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                            controller: fname,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              label:
+                                                                  PrimaryFont(
+                                                                title:
+                                                                    "Full name",
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            255,
+                                                                            255)),
+                                                              ),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            ),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Please enter your full name';
+                                                              }
+                                                              return null;
+                                                            },
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        Expanded(
+                                                          child: TextFormField(
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                            controller: email,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              label:
+                                                                  PrimaryFont(
+                                                                title: "Email",
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            255,
+                                                                            255)),
+                                                              ),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            ),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Please enter your email';
+                                                              }
+                                                              // Simple email validation
+                                                              if (!RegExp(
+                                                                      r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$')
+                                                                  .hasMatch(
+                                                                      value)) {
+                                                                return 'Please enter a valid email';
+                                                              }
+                                                              return null;
+                                                            },
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 5),
+                                                        Expanded(
+                                                          child: TextFormField(
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                            controller: pnum,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                              label:
+                                                                  PrimaryFont(
+                                                                title:
+                                                                    "Phone Number",
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              enabledBorder:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    color: Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            255,
+                                                                            255,
+                                                                            255)),
+                                                              ),
+                                                              border:
+                                                                  OutlineInputBorder(
+                                                                borderSide: BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            ),
+                                                            validator: (value) {
+                                                              if (value ==
+                                                                      null ||
+                                                                  value
+                                                                      .isEmpty) {
+                                                                return 'Please enter your phone number';
+                                                              }
+                                                              if (!RegExp(
+                                                                      r'^[0-9]+$')
+                                                                  .hasMatch(
+                                                                      value)) {
+                                                                return 'Please enter a valid phone number';
+                                                              }
+                                                              return null;
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
                                               const SizedBox(height: 15),
                                               SizedBox(
                                                 height: 48,
@@ -382,7 +547,7 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                 const PrimaryFont(
                                   title: "ANNOUNCEMENT",
                                   color: Colors.white,
-                                  size: 24,
+                                  size: 15,
                                 ),
                                 Row(
                                   children: [
@@ -417,11 +582,12 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                     //   width: 15,
                                     // ),
                                     SizedBox(
-                                      height: 48,
-                                      width: 100,
+                                      height: 38,
+                                      width: 90,
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: maincolor,
+                                              backgroundColor:
+                                                  Colors.lightBlueAccent,
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -435,6 +601,7 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                           },
                                           child: const PrimaryFont(
                                             title: "Home",
+                                            size: 12,
                                             color: Colors.white,
                                           )),
                                     ),

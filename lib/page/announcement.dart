@@ -23,6 +23,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   final _dateController = TextEditingController();
   final _timeController = TextEditingController();
   final _othersController = TextEditingController();
+  final _newtextimage = TextEditingController();
   bool isLoading = false;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -65,6 +66,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
       setState(() {
         _imageData = imageInfo.data;
         _imageName = imageInfo.fileName;
+        debugPrint("$_imageName");
+        _newtextimage.text = imageInfo.fileName.toString();
       });
     }
   }
@@ -203,19 +206,15 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 32),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Announcement List',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 GlobalButton(
                     oncallback: () {
                       showCreateAnnouncement(context);
                     },
-                    title: "Create New"),
+                    title: "Create New Announcement"),
+                const SizedBox(height: 12),
               ],
             ),
             const SizedBox(height: 16),
@@ -336,139 +335,142 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             'Add Announcement',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          content: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the announcement title';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _venueController,
-                    decoration: const InputDecoration(
-                      labelText: 'Venue',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the venue';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _dateController,
-                    decoration: InputDecoration(
-                      labelText: 'Date',
-                      border: const OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.calendar_today),
-                        onPressed: () {
-                          _selectDate(context);
-                        },
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.40,
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Title',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the announcement title';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the date';
-                      }
-                      return null;
-                    },
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _timeController,
-                    decoration: InputDecoration(
-                      labelText: 'Time',
-                      border: const OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.access_time),
-                        onPressed: () {
-                          _selectTime(context);
-                        },
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _venueController,
+                      decoration: const InputDecoration(
+                        labelText: 'Venue',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the venue';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the time';
-                      }
-                      return null;
-                    },
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: _imageName ?? '',
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Image',
-                            border: OutlineInputBorder(),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          readOnly: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select an image';
-                            }
-                            return null;
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _dateController,
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                        border: const OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.calendar_today),
+                          onPressed: () {
+                            _selectDate(context);
                           },
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.image),
-                        onPressed: _pickImage,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _othersController,
-                    decoration: const InputDecoration(
-                      labelText: 'Others',
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      fillColor: Colors.white,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the date';
+                        }
+                        return null;
+                      },
+                      readOnly: true,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : GlobalButton(
-                          oncallback: () {
-                            _submitAnnouncement();
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _timeController,
+                      decoration: InputDecoration(
+                        labelText: 'Time',
+                        border: const OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.access_time),
+                          onPressed: () {
+                            _selectTime(context);
                           },
-                          title: "Submit Announcement",
                         ),
-                ],
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the time';
+                        }
+                        return null;
+                      },
+                      readOnly: true,
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _newtextimage,
+                            decoration: const InputDecoration(
+                              labelText: 'Image',
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            readOnly: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select an image';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.image),
+                          onPressed: _pickImage,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _othersController,
+                      decoration: const InputDecoration(
+                        labelText: 'Others',
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : GlobalButton(
+                            oncallback: () async {
+                              _submitAnnouncement().then((uid) {
+                                Navigator.pop(context);
+                              });
+                            },
+                            title: "Submit Announcement",
+                          ),
+                  ],
+                ),
               ),
             ),
           ),

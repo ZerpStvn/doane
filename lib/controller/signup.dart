@@ -643,12 +643,7 @@ class _UserRegistrationState extends State<UserRegistration> {
                           height: 40,
                           child: ButtonCallback(
                               function: () {
-                                if (_usernameController.text.isEmpty ||
-                                    _passwordController.text.isEmpty) {
-                                  handleCreateAccount();
-                                } else {
-                                  null;
-                                }
+                                handleCreateAccount();
                               },
                               bgcolor: _usernameController.text.isEmpty ||
                                       _passwordController.text.isEmpty
