@@ -62,6 +62,7 @@ class _MobileMainPageState extends State<MobileMainPage> {
 
   @override
   Widget build(BuildContext context) {
+    double widthSize = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -138,92 +139,96 @@ class _MobileMainPageState extends State<MobileMainPage> {
                         // ),
                       ],
                     )),
-                Positioned(
-                    top: 30,
-                    left: 30,
-                    right: 30,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const PrimaryFont(
-                          title: "DOANE",
-                          color: Colors.white,
-                          size: 12,
-                        ),
-                        Row(
-                          children: [
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: const PrimaryFont(
-                            //     title: "Events",
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // const SizedBox(
-                            //   width: 15,
-                            // ),
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: const PrimaryFont(
-                            //     title: "Anouncements",
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // const SizedBox(
-                            //   width: 15,
-                            // ),
-                            // TextButton(
-                            //   onPressed: () {},
-                            //   child: const PrimaryFont(
-                            //     title: "Contact",
-                            //     color: Colors.white,
-                            //   ),
-                            // ),
-                            // const SizedBox(
-                            //   width: 15,
-                            // ),
-                            SizedBox(
-                              height: 38,
-                              width: 80,
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.lightBlueAccent,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(9))),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginCont()));
-                                  },
-                                  child: const PrimaryFont(
-                                    title: "Login",
-                                    size: 12,
-                                    color: Colors.white,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 38,
-                          width: 130,
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.lightBlueAccent,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(9))),
-                              onPressed: () {
-                                urldlaunchUrl();
-                              },
-                              child: const PrimaryFont(
-                                title: "Download ",
-                                color: Colors.white,
-                              )),
-                        )
-                      ],
-                    ))
+                // widthSize > 646
+                //     ? Container()
+                //     : Positioned(
+                //         top: 30,
+                //         left: 30,
+                //         right: 30,
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //           children: [
+                //             const PrimaryFont(
+                //               title: "DOANE",
+                //               color: Colors.white,
+                //               size: 12,
+                //             ),
+                //             Row(
+                //               children: [
+                //                 // TextButton(
+                //                 //   onPressed: () {},
+                //                 //   child: const PrimaryFont(
+                //                 //     title: "Events",
+                //                 //     color: Colors.white,
+                //                 //   ),
+                //                 // ),
+                //                 // const SizedBox(
+                //                 //   width: 15,
+                //                 // ),
+                //                 // TextButton(
+                //                 //   onPressed: () {},
+                //                 //   child: const PrimaryFont(
+                //                 //     title: "Anouncements",
+                //                 //     color: Colors.white,
+                //                 //   ),
+                //                 // ),
+                //                 // const SizedBox(
+                //                 //   width: 15,
+                //                 // ),
+                //                 // TextButton(
+                //                 //   onPressed: () {},
+                //                 //   child: const PrimaryFont(
+                //                 //     title: "Contact",
+                //                 //     color: Colors.white,
+                //                 //   ),
+                //                 // ),
+                //                 // const SizedBox(
+                //                 //   width: 15,
+                //                 // ),
+                //                 SizedBox(
+                //                   height: 38,
+                //                   width: 80,
+                //                   child: ElevatedButton(
+                //                       style: ElevatedButton.styleFrom(
+                //                           backgroundColor:
+                //                               Colors.lightBlueAccent,
+                //                           shape: RoundedRectangleBorder(
+                //                               borderRadius:
+                //                                   BorderRadius.circular(9))),
+                //                       onPressed: () {
+                //                         Navigator.push(
+                //                             context,
+                //                             MaterialPageRoute(
+                //                                 builder: (context) =>
+                //                                     const LoginCont()));
+                //                       },
+                //                       child: const PrimaryFont(
+                //                         title: "Login",
+                //                         size: 12,
+                //                         color: Colors.white,
+                //                       )),
+                //                 ),
+                //               ],
+                //             ),
+                //             SizedBox(
+                //               height: 38,
+                //               width: 130,
+                //               child: ElevatedButton(
+                //                   style: ElevatedButton.styleFrom(
+                //                       backgroundColor: Colors.lightBlueAccent,
+                //                       shape: RoundedRectangleBorder(
+                //                           borderRadius:
+                //                               BorderRadius.circular(9))),
+                //                   onPressed: () {
+                //                     urldlaunchUrl();
+                //                   },
+                //                   child: const PrimaryFont(
+                //                     title: "Download ",
+                //                     color: Colors.white,
+                //                   )),
+                //             )
+                //           ],
+                //         ))
               ],
             ),
             Column(
@@ -594,7 +599,7 @@ class _MobileMainPageState extends State<MobileMainPage> {
                   ],
                 ),
                 //  event
-                const EventsFrontpage(),
+                // widthSize > 658 ? const EventsFrontpage() : Container(),
                 // devotion
                 Column(
                   children: [

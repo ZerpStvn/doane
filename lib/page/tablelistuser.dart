@@ -225,9 +225,6 @@ class _UsersDatalistState extends State<UsersDatalist> {
                                         } else {
                                           null;
                                         }
-                                        await emailService.sendMailVerified(
-                                            recipientEmail: user['email'],
-                                            message: "Hello");
                                       },
                                       child: Container(
                                           padding: const EdgeInsets.all(3),

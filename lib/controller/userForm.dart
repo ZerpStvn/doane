@@ -114,7 +114,7 @@ class _UserFormState extends State<UserForm> {
           'username': _usernameController.text,
           'password': _passwordController.text,
           'created': Timestamp.now(),
-          'verif': 3
+          'verif': 0
         });
         _showSnackbar('Form submitted successfully!');
       } catch (e) {
