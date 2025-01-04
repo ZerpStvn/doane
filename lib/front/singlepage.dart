@@ -7,10 +7,14 @@ import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
 
 class PreRegistrationPage extends StatefulWidget {
+  final String statusevent;
   final String docsID;
   final int page;
   const PreRegistrationPage(
-      {super.key, required this.docsID, required this.page});
+      {super.key,
+      required this.docsID,
+      required this.page,
+      required this.statusevent});
 
   @override
   State<PreRegistrationPage> createState() => _PreRegistrationPageState();
@@ -507,29 +511,39 @@ class _PreRegistrationPageState extends State<PreRegistrationPage> {
                                                       ],
                                                     ),
                                               const SizedBox(height: 15),
-                                              SizedBox(
-                                                height: 48,
-                                                child: ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor: maincolor,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              9),
+                                              widget.statusevent == "Past" ||
+                                                      widget.statusevent ==
+                                                          "Ongoing"
+                                                  ? Container()
+                                                  : SizedBox(
+                                                      height: 48,
+                                                      child: ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              maincolor,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        9),
+                                                          ),
+                                                        ),
+                                                        onPressed: () {
+                                                          // print(widget
+                                                          //     .statusevent);
+                                                          eventRegister(
+                                                              datafile[
+                                                                  'title']);
+                                                        },
+                                                        child:
+                                                            const PrimaryFont(
+                                                          title: "REGISTER NOW",
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  onPressed: () {
-                                                    eventRegister(
-                                                        datafile['title']);
-                                                  },
-                                                  child: const PrimaryFont(
-                                                    title: "REGISTER NOW",
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ),

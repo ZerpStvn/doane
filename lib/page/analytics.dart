@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doane/controller/widget/buttoncall.dart';
 import 'package:doane/utils/const.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class VisualAnalytics extends StatefulWidget {
   final String eventID;
@@ -125,7 +129,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       PieChartSectionData(
         value: totalAttendees.toDouble(),
         color: Colors.blue,
-        title: 'Attendees: $totalAttendees',
+        title: 'Pre-Registered: $totalAttendees',
         radius: 60,
         titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
@@ -145,6 +149,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
               "Attendance Analytics",
@@ -189,7 +194,8 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const LegendItem(color: Colors.blue, text: 'Attendees'),
+                      const LegendItem(
+                          color: Colors.blue, text: 'Pre-Registered'),
                       const LegendItem(color: Colors.orange, text: 'Remaining'),
                     ],
                   ),
@@ -197,6 +203,16 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
               ],
             ),
             const SizedBox(height: 50),
+            attendeesData2.isEmpty
+                ? Container()
+                : ButtonCallback(
+                    bgcolor: maincolor,
+                    fcolor: Colors.white,
+                    function: () {
+                      _generatePdfAndPrint(context);
+                    },
+                    title: "Print Attendance"),
+            const SizedBox(height: 20),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: attendeesData2.isEmpty
@@ -204,7 +220,7 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
                   : SingleChildScrollView(
                       child: DataTable(
                         headingRowColor:
-                            const MaterialStatePropertyAll(maincolor),
+                            const WidgetStatePropertyAll(maincolor),
                         headingTextStyle: const TextStyle(color: Colors.white),
                         columns: const [
                           DataColumn(label: Text('User Name')),
@@ -227,6 +243,95 @@ class _VisualAnalyticsState extends State<VisualAnalytics> {
         ),
       ),
     );
+  }
+
+  void _generatePdfAndPrint(BuildContext context) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Text(
+                'Pre-Registered Data',
+                style:
+                    pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  // Table Header
+                  pw.TableRow(
+                    decoration:
+                        const pw.BoxDecoration(color: PdfColors.grey300),
+                    children: [
+                      pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('User Name',
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold))),
+                      pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('Email',
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold))),
+                      pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('Event Name',
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold))),
+                      pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('Phone',
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold))),
+                      pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text('Remarks',
+                              style: pw.TextStyle(
+                                  fontWeight: pw.FontWeight.bold))),
+                    ],
+                  ),
+                  // Table Rows
+                  ...attendeesData2.map(
+                    (attendee) => pw.TableRow(
+                      children: [
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(attendee['userName'] ?? ''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(attendee['email'] ?? ''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(attendee['eventName'] ?? ''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(attendee['phone'] ?? ''),
+                        ),
+                        pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Text(''),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    // Print the PDF
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save());
   }
 }
 

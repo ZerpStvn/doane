@@ -750,7 +750,7 @@ class _UserPledgesState extends State<UserPledges> {
                                     child: Text(
                                       pledge['amount'] != 0
                                           ? "Pledges"
-                                          : "Finished",
+                                          : "Accomplished",
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),

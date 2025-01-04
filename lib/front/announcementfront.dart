@@ -103,7 +103,10 @@ class _AnnouncementFrontState extends State<AnnouncementFront> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PreRegistrationPage(
-                                      docsID: dataID, page: 0)));
+                                        docsID: dataID,
+                                        page: 0,
+                                        statusevent: '',
+                                      )));
                         },
                         child: Stack(
                           children: [

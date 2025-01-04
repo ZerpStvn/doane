@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/controller/signup.dart';
 import 'package:doane/controller/widget/buttoncall.dart';
+import 'package:doane/front/indexmain.dart';
 import 'package:doane/page/homepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -147,14 +148,32 @@ class _LoginContState extends State<LoginCont> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      SizedBox(
-                        width: 260,
-                        height: 55,
-                        child: ButtonCallback(
-                          function: handlesubmit,
-                          title: "Submit",
+                      Row(children: [
+                        SizedBox(
+                          width: 160,
+                          height: 55,
+                          child: ButtonCallback(
+                            bgcolor: Colors.blue,
+                            fcolor: Colors.white,
+                            function: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Mainpage()));
+                            },
+                            title: "Back",
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 5),
+                        SizedBox(
+                          width: 160,
+                          height: 55,
+                          child: ButtonCallback(
+                            function: handlesubmit,
+                            title: "Submit",
+                          ),
+                        ),
+                      ]),
                       const SizedBox(height: 10),
                       errormessage.isNotEmpty
                           ? PrimaryFont(

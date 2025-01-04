@@ -30,7 +30,8 @@ class _EventsPageState extends State<EventsPage> {
   final _formKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
   String _searchQuery = '';
-
+  String ismptyError = "";
+  late List<Map<String, dynamic>> announcements;
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -72,7 +73,12 @@ class _EventsPageState extends State<EventsPage> {
   }
 
   Future<void> _submitAnnouncement() async {
-    if (_formKey.currentState!.validate()) {
+    if (_titleController.text.isNotEmpty &&
+        _venueController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty &&
+        _dateController.text.isNotEmpty &&
+        _timeController.text.isNotEmpty &&
+        _timeController.text.isNotEmpty) {
       setState(() {
         isLoading = true;
       });
@@ -100,7 +106,10 @@ class _EventsPageState extends State<EventsPage> {
 
       setState(() {
         isLoading = false;
+        Navigator.pop(context);
       });
+    } else {
+      _showSnackbar("Complete All The Fields");
     }
   }
 
@@ -196,6 +205,51 @@ class _EventsPageState extends State<EventsPage> {
     super.dispose();
   }
 
+  // Helper function to parse date and time and categorize events
+  String _getEventCategory(String date, String time) {
+    try {
+      // Define the formats based on your input
+      final DateFormat dateFormat =
+          DateFormat('MMM d, yyyy'); // Example: Nov 4, 2024
+      final DateFormat timeFormat = DateFormat('h:mm a'); // Example: 5:19 PM
+
+      // Parse the date and time
+      final DateTime eventDateTime = DateTime(
+        dateFormat.parse(date).year,
+        dateFormat.parse(date).month,
+        dateFormat.parse(date).day,
+        timeFormat.parse(time).hour,
+        timeFormat.parse(time).minute,
+      );
+
+      final DateTime now = DateTime.now();
+
+      // Determine the category based on comparison with current time
+      if (eventDateTime.isAfter(now)) {
+        return "Upcoming";
+      } else if (eventDateTime.isBefore(now)) {
+        return "Past";
+      } else {
+        return "Ongoing";
+      }
+    } catch (e) {
+      return "Unknown"; // Handle invalid date or time formats
+    }
+  }
+
+  Color eventCategoryColor(category) {
+    switch (category) {
+      case "Past":
+        return Colors.red;
+      case "Upcoming":
+        return Colors.green;
+      case "Ongoing":
+        return Colors.orange;
+      default:
+        return Colors.grey; // For unknown or uncategorized cases
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -279,8 +333,16 @@ class _EventsPageState extends State<EventsPage> {
                             DataColumn(
                                 label: Text('Actions',
                                     style: TextStyle(color: Colors.white))),
+                            DataColumn(
+                                label: Text('Category',
+                                    style: TextStyle(color: Colors.white))),
                           ],
                           rows: announcements.map((announcement) {
+                            final String category = _getEventCategory(
+                              announcement['date'],
+                              announcement['time'],
+                            );
+
                             return DataRow(cells: [
                               DataCell(Text(announcement['title'])),
                               DataCell(Text(announcement['venue'])),
@@ -311,6 +373,16 @@ class _EventsPageState extends State<EventsPage> {
                                   },
                                 ),
                               ),
+                              DataCell(Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: eventCategoryColor(category),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Text(
+                                  category,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              )),
                             ]);
                           }).toList(),
                         ),
@@ -460,15 +532,18 @@ class _EventsPageState extends State<EventsPage> {
                       ? const Center(child: CircularProgressIndicator())
                       : GlobalButton(
                           oncallback: () async {
-                            _submitAnnouncement().then((uid) {
-                              Navigator.pop(context);
-                            });
+                            _submitAnnouncement().then((uid) {});
                           },
                           title: "Submit Events"),
                   // ElevatedButton(
                   //   onPressed: _submitAnnouncement,
                   //   child: const Text('Submit Events'),
                   // ),
+                  const SizedBox(height: 16),
+                  Text(
+                    ismptyError,
+                    style: const TextStyle(color: Colors.red),
+                  )
                 ],
               ),
             ),

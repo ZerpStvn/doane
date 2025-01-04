@@ -5,6 +5,7 @@ import 'package:doane/front/mobile/indexmobile.dart';
 import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Mainpage extends StatefulWidget {
@@ -30,6 +31,50 @@ class _MainpageState extends State<Mainpage> {
       return "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     } else {
       return dataimage;
+    }
+  } // Helper function to parse date and time and categorize events
+
+  String _getEventCategory(String date, String time) {
+    try {
+      // Define the formats based on your input
+      final DateFormat dateFormat =
+          DateFormat('MMM d, yyyy'); // Example: Nov 4, 2024
+      final DateFormat timeFormat = DateFormat('h:mm a'); // Example: 5:19 PM
+
+      // Parse the date and time
+      final DateTime eventDateTime = DateTime(
+        dateFormat.parse(date).year,
+        dateFormat.parse(date).month,
+        dateFormat.parse(date).day,
+        timeFormat.parse(time).hour,
+        timeFormat.parse(time).minute,
+      );
+
+      final DateTime now = DateTime.now();
+
+      // Determine the category based on comparison with current time
+      if (eventDateTime.isAfter(now)) {
+        return "Upcoming";
+      } else if (eventDateTime.isBefore(now)) {
+        return "Past";
+      } else {
+        return "Ongoing";
+      }
+    } catch (e) {
+      return "Unknown"; // Handle invalid date or time formats
+    }
+  }
+
+  Color eventCategoryColor(category) {
+    switch (category) {
+      case "Past":
+        return Colors.red;
+      case "Upcoming":
+        return Colors.green;
+      case "Ongoing":
+        return Colors.orange;
+      default:
+        return Colors.grey; // For unknown or uncategorized cases
     }
   }
 
@@ -420,7 +465,10 @@ class _MainpageState extends State<Mainpage> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 PreRegistrationPage(
-                                                    docsID: dataID, page: 0)));
+                                                  docsID: dataID,
+                                                  page: 0,
+                                                  statusevent: '',
+                                                )));
                                   },
                                   child: Stack(
                                     children: [
@@ -880,7 +928,10 @@ class _MainpageState extends State<Mainpage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PreRegistrationPage(
-                                      docsID: dataID, page: 0)));
+                                        docsID: dataID,
+                                        page: 0,
+                                        statusevent: '',
+                                      )));
                         },
                         child: widthSize >= 456
                             ? Row(
@@ -1001,13 +1052,20 @@ class _MainpageState extends State<Mainpage> {
                   child: ListView(
                     children: snapshot.data!.docs.map((doc) {
                       var dataID = doc.id;
+                      final String category = _getEventCategory(
+                        doc['date'],
+                        doc['time'],
+                      );
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PreRegistrationPage(
-                                      docsID: dataID, page: 1)));
+                                        docsID: dataID,
+                                        page: 1,
+                                        statusevent: category,
+                                      )));
                         },
                         child: widthSize >= 456
                             ? Row(

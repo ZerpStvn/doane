@@ -4,6 +4,7 @@ import 'package:doane/front/event.dart';
 import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MobileMainPage extends StatefulWidget {
@@ -14,6 +15,51 @@ class MobileMainPage extends StatefulWidget {
 }
 
 class _MobileMainPageState extends State<MobileMainPage> {
+  // Helper function to parse date and time and categorize events
+  String _getEventCategory(String date, String time) {
+    try {
+      // Define the formats based on your input
+      final DateFormat dateFormat =
+          DateFormat('MMM d, yyyy'); // Example: Nov 4, 2024
+      final DateFormat timeFormat = DateFormat('h:mm a'); // Example: 5:19 PM
+
+      // Parse the date and time
+      final DateTime eventDateTime = DateTime(
+        dateFormat.parse(date).year,
+        dateFormat.parse(date).month,
+        dateFormat.parse(date).day,
+        timeFormat.parse(time).hour,
+        timeFormat.parse(time).minute,
+      );
+
+      final DateTime now = DateTime.now();
+
+      // Determine the category based on comparison with current time
+      if (eventDateTime.isAfter(now)) {
+        return "Upcoming";
+      } else if (eventDateTime.isBefore(now)) {
+        return "Past";
+      } else {
+        return "Ongoing";
+      }
+    } catch (e) {
+      return "Unknown"; // Handle invalid date or time formats
+    }
+  }
+
+  Color eventCategoryColor(category) {
+    switch (category) {
+      case "Past":
+        return Colors.red;
+      case "Upcoming":
+        return Colors.green;
+      case "Ongoing":
+        return Colors.orange;
+      default:
+        return Colors.grey; // For unknown or uncategorized cases
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -378,6 +424,10 @@ class _MobileMainPageState extends State<MobileMainPage> {
                             itemBuilder: (context, index) {
                               var datafile = snapshot.data!.docs[index].data();
                               var dataID = snapshot.data!.docs[index].id;
+                              final String category = _getEventCategory(
+                                datafile['date'],
+                                datafile['time'],
+                              );
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.push(
@@ -385,7 +435,10 @@ class _MobileMainPageState extends State<MobileMainPage> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               PreRegistrationPage(
-                                                  docsID: dataID, page: 0)));
+                                                docsID: dataID,
+                                                page: 0,
+                                                statusevent: category,
+                                              )));
                                 },
                                 child: Stack(
                                   children: [

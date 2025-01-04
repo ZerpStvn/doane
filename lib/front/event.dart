@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/front/singlepage.dart';
 import 'package:doane/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EventsFrontpage extends StatefulWidget {
   const EventsFrontpage({super.key});
@@ -18,6 +19,51 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
       return "https://images.unsplash.com/photo-1499652848871-1527a310b13a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
     } else {
       return dataimage;
+    }
+  }
+
+  // Helper function to parse date and time and categorize events
+  String _getEventCategory(String date, String time) {
+    try {
+      // Define the formats based on your input
+      final DateFormat dateFormat =
+          DateFormat('MMM d, yyyy'); // Example: Nov 4, 2024
+      final DateFormat timeFormat = DateFormat('h:mm a'); // Example: 5:19 PM
+
+      // Parse the date and time
+      final DateTime eventDateTime = DateTime(
+        dateFormat.parse(date).year,
+        dateFormat.parse(date).month,
+        dateFormat.parse(date).day,
+        timeFormat.parse(time).hour,
+        timeFormat.parse(time).minute,
+      );
+
+      final DateTime now = DateTime.now();
+
+      // Determine the category based on comparison with current time
+      if (eventDateTime.isAfter(now)) {
+        return "Upcoming";
+      } else if (eventDateTime.isBefore(now)) {
+        return "Past";
+      } else {
+        return "Ongoing";
+      }
+    } catch (e) {
+      return "Unknown"; // Handle invalid date or time formats
+    }
+  }
+
+  Color eventCategoryColor(category) {
+    switch (category) {
+      case "Past":
+        return Colors.red;
+      case "Upcoming":
+        return Colors.green;
+      case "Ongoing":
+        return Colors.orange;
+      default:
+        return Colors.grey; // For unknown or uncategorized cases
     }
   }
 
@@ -97,13 +143,20 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                     itemBuilder: (context, index) {
                       var datafile = snapshot.data!.docs[index].data();
                       var dataID = snapshot.data!.docs[index].id;
+
+                      final String category = _getEventCategory(
+                        datafile['date'],
+                        datafile['time'],
+                      );
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => PreRegistrationPage(
-                                      docsID: dataID, page: 1)));
+                                      statusevent: category,
+                                      docsID: dataID,
+                                      page: 1)));
                         },
                         child: Stack(
                           children: [
@@ -120,6 +173,19 @@ class _EventsFrontpageState extends State<EventsFrontpage> {
                                       image: NetworkImage(
                                           checkimage(datafile['image'])))),
                             ),
+                            Positioned(
+                                top: 15,
+                                left: 20,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      color: eventCategoryColor(category),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Text(
+                                    category,
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )),
                             Positioned(
                                 bottom: 45,
                                 left: 20,

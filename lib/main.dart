@@ -1,12 +1,11 @@
 //import 'package:doane/controller/login.dart';
-import 'package:doane/controller/login.dart';
 import 'package:doane/firebase_options.dart';
 import 'package:doane/front/indexmain.dart';
-import 'package:doane/front/singlepage.dart';
+import 'package:doane/front/mobile/indexmobile.dart';
 import 'package:doane/page/homepage.dart';
-import 'package:doane/page_test.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -49,7 +48,11 @@ class AuthenticationWrapper extends StatelessWidget {
         if (snapshot.hasData) {
           return const HomePage();
         } else {
-          return const Mainpage();
+          if (kIsWeb) {
+            return const Mainpage();
+          } else {
+            return const MobileMainPage();
+          }
         }
       },
     );

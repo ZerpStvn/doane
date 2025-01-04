@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doane/utils/const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AttendEventPage extends StatefulWidget {
   const AttendEventPage({super.key});
@@ -121,6 +122,50 @@ class _AttendEventPageState extends State<AttendEventPage> {
     return false; // User has not attended or an error occurred
   }
 
+  String _getEventCategory(String date, String time) {
+    try {
+      // Define the formats based on your input
+      final DateFormat dateFormat =
+          DateFormat('MMM d, yyyy'); // Example: Nov 4, 2024
+      final DateFormat timeFormat = DateFormat('h:mm a'); // Example: 5:19 PM
+
+      // Parse the date and time
+      final DateTime eventDateTime = DateTime(
+        dateFormat.parse(date).year,
+        dateFormat.parse(date).month,
+        dateFormat.parse(date).day,
+        timeFormat.parse(time).hour,
+        timeFormat.parse(time).minute,
+      );
+
+      final DateTime now = DateTime.now();
+
+      // Determine the category based on comparison with current time
+      if (eventDateTime.isAfter(now)) {
+        return "Upcoming";
+      } else if (eventDateTime.isBefore(now)) {
+        return "Past";
+      } else {
+        return "Ongoing";
+      }
+    } catch (e) {
+      return "Unknown"; // Handle invalid date or time formats
+    }
+  }
+
+  Color eventCategoryColor(category) {
+    switch (category) {
+      case "Past":
+        return Colors.red;
+      case "Upcoming":
+        return Colors.green;
+      case "Ongoing":
+        return Colors.orange;
+      default:
+        return Colors.grey; // For unknown or uncategorized cases
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -148,7 +193,10 @@ class _AttendEventPageState extends State<AttendEventPage> {
           itemCount: events.length,
           itemBuilder: (context, index) {
             var event = events[index];
-
+            final String category = _getEventCategory(
+              event['date'],
+              event['time'],
+            );
             return FutureBuilder<bool>(
               future: checkAttendance(event.id),
               builder: (context, attendanceSnapshot) {
@@ -169,12 +217,27 @@ class _AttendEventPageState extends State<AttendEventPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            event['title'] ?? 'No Title',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                event['title'] ?? 'No Title',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: eventCategoryColor(category),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Text(
+                                  category,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              )
+                            ],
                           ),
                           const SizedBox(height: 8),
                           event['image'] != null
@@ -195,30 +258,52 @@ class _AttendEventPageState extends State<AttendEventPage> {
                           ),
                           const Spacer(),
                           Center(
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: 40,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: hasAttended
-                                      ? Colors.red // Grey out if attended
-                                      : maincolor,
-                                  shape: const RoundedRectangleBorder(),
-                                ),
-                                onPressed: hasAttended
-                                    ? () {
-                                        _cancelattendEvent(
-                                            event.id, event['title']);
-                                      }
-                                    : () {
-                                        _attendEvent(event.id, event['title']);
+                            child: category == "Past"
+                                ? SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.grey,
+                                        shape: const RoundedRectangleBorder(),
+                                      ),
+                                      onPressed: () {
+                                        null;
                                       },
-                                child: Text(
-                                  hasAttended ? 'Can\'t go' : 'Attend Event',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
+                                      child: const Text(
+                                        'Attend Event',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: hasAttended
+                                            ? Colors.red // Grey out if attended
+                                            : maincolor,
+                                        shape: const RoundedRectangleBorder(),
+                                      ),
+                                      onPressed: hasAttended
+                                          ? () {
+                                              _cancelattendEvent(
+                                                  event.id, event['title']);
+                                            }
+                                          : () {
+                                              _attendEvent(
+                                                  event.id, event['title']);
+                                            },
+                                      child: Text(
+                                        hasAttended
+                                            ? 'Can\'t go'
+                                            : 'Attend Event',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
